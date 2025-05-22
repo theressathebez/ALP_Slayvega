@@ -11,6 +11,7 @@ struct CommentModel{
     var CommentId:String = ""
     var Username:String = ""
     var CommentContent:String = ""
+    var Hashtags:String = ""
     var CommentLikeCount:Int = 0
     var CommentDates:Date = Date()
     var userId:String = ""
