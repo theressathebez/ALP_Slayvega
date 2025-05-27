@@ -20,7 +20,7 @@ struct MainView: View {
                 .tabItem {
                     Label("Mindfulness", systemImage: "brain.head.profile")
                 }
-            ProfileSetupView(authVM: AuthViewModel())
+            ProfileView(showAuthSheet: $showAuthSheet, authVM: AuthViewModel())
                 .tabItem {
                     Label("Profile", systemImage: "person")
                 }

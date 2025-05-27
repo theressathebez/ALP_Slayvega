@@ -1,4 +1,4 @@
-//
+
 //  AuthViewModel.swift
 //  ALP_Slayvega
 //
@@ -25,11 +25,21 @@ class AuthViewModel: ObservableObject {
     func checkUserSession() {
         self.user = Auth.auth().currentUser
         self.isSignedIn = self.user != nil
+        
+        // Update myUser email if user is signed in
+        if let currentUser = self.user {
+            if self.myUser.email.isEmpty {
+                self.myUser.email = currentUser.email ?? ""
+            }
+            self.myUser.uid = currentUser.uid
+        }
     }
 
     func signOut() {
         do {
             try Auth.auth().signOut()
+            // Clear user data
+            self.myUser = MyUser()
             self.checkUserSession()
         } catch {
             print("Error signing out: \(error)")
@@ -45,6 +55,8 @@ class AuthViewModel: ObservableObject {
             
             DispatchQueue.main.async {
                 self.user = result.user
+                self.myUser.uid = result.user.uid
+                self.myUser.email = result.user.email ?? self.myUser.email
                 self.isSignedIn = true
                 self.falseCredential = false
             }
@@ -54,7 +66,6 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
-
 
     func signUp() async {
         do {
@@ -65,6 +76,8 @@ class AuthViewModel: ObservableObject {
 
             DispatchQueue.main.async {
                 self.user = result.user
+                self.myUser.uid = result.user.uid
+                self.myUser.email = result.user.email ?? self.myUser.email
                 self.isSignedIn = true
                 self.falseCredential = false
             }
@@ -75,6 +88,4 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
-
-
 }
