@@ -171,7 +171,7 @@ struct ShareHeaderView: View {
                         communityDates: Date()
                     )
                     
-                    communityVM.createSpot(newCommunity)
+                    communityVM.createCommunity(newCommunity)
                     
                     // Clear form
                     postText = ""

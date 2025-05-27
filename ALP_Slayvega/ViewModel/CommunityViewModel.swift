@@ -73,7 +73,7 @@ class CommunityViewModel: ObservableObject {
             }
     }
     
-    func createSpot(_ community: CommunityModel) {
+    func createCommunity(_ community: CommunityModel) {
         guard let uid = userId else { return }
         
         var newCommunity = community
