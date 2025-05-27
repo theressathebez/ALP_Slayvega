@@ -4,9 +4,11 @@ import FirebaseAuth
 
 class CommunityViewModel: ObservableObject {
     @Published var communities: [CommunityModel] = []
+    @Published var userCommunities: [CommunityModel] = []
     
     private var dbRef = Database.database().reference().child("communities")
-    private var currentListener: DatabaseHandle?
+    private var allPostsListener: DatabaseHandle?
+    private var userPostsListener: DatabaseHandle?
     private var authHandle: AuthStateDidChangeListenerHandle?
     
     private var userId: String? {
@@ -15,28 +17,77 @@ class CommunityViewModel: ObservableObject {
     
     init() {
         authHandle = Auth.auth().addStateDidChangeListener { [weak self] _, _ in
-                    self?.loadUserCommunity()
-                }
+            self?.loadAllCommunities()
+            self?.loadUserCommunity()
+        }
+        loadAllCommunities()
         loadUserCommunity()
     }
     
-    deinit{
+    deinit {
         if let handle = authHandle {
-                    Auth.auth().removeStateDidChangeListener(handle)
-                }
+            Auth.auth().removeStateDidChangeListener(handle)
+        }
+        if let handle = allPostsListener {
+            dbRef.removeObserver(withHandle: handle)
+        }
+        if let handle = userPostsListener {
+            dbRef.removeObserver(withHandle: handle)
+        }
     }
     
+    // Load all posts from all users
+    func loadAllCommunities() {
+        if let handle = allPostsListener {
+            dbRef.removeObserver(withHandle: handle)
+        }
+        
+        allPostsListener = dbRef.observe(.value) { [weak self] snapshot in
+            guard let self = self else { return }
+            var fetched: [CommunityModel] = []
+            
+            for case let child as DataSnapshot in snapshot.children {
+                if let data = child.value as? [String: Any] {
+                    // Handle date parsing from Firebase
+                    var communityDate = Date()
+                    if let timestamp = data["communityDates"] as? TimeInterval {
+                        communityDate = Date(timeIntervalSince1970: timestamp / 1000)
+                    } else if let dateString = data["communityDates"] as? String {
+                        let formatter = ISO8601DateFormatter()
+                        communityDate = formatter.date(from: dateString) ?? Date()
+                    }
+                    
+                    let community = CommunityModel(
+                        id: data["id"] as? String ?? child.key,
+                        username: data["username"] as? String ?? "",
+                        communityContent: data["communityContent"] as? String ?? "",
+                        hashtags: data["hashtags"] as? String ?? "",
+                        communityLikeCount: data["communityLikeCount"] as? Int ?? 0,
+                        communityDates: communityDate,
+                        userId: data["userId"] as? String ?? ""
+                    )
+                    fetched.append(community)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.communities = fetched
+            }
+        }
+    }
+    
+    // Load only current user's posts (for profile/my posts view)
     func loadUserCommunity() {
-        if let handle = currentListener {
+        if let handle = userPostsListener {
             dbRef.removeObserver(withHandle: handle)
         }
         
         guard let uid = userId else {
-            communities.removeAll()
+            userCommunities.removeAll()
             return
         }
 
-        currentListener = dbRef
+        userPostsListener = dbRef
             .queryOrdered(byChild: "userId")
             .queryEqual(toValue: uid)
             .observe(.value) { [weak self] snapshot in
@@ -68,7 +119,7 @@ class CommunityViewModel: ObservableObject {
                 }
                 
                 DispatchQueue.main.async {
-                    self.communities = fetched
+                    self.userCommunities = fetched
                 }
             }
     }
@@ -107,5 +158,6 @@ class CommunityViewModel: ObservableObject {
 
     func clearLocalData() {
         communities.removeAll()
+        userCommunities.removeAll()
     }
 }
