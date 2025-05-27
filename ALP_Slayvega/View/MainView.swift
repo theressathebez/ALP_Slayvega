@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct MainView: View {
+    @EnvironmentObject var authViewModel: AuthViewModel //add EnvObj
+    @State var showAuthSheet = false //add sheet state
+    
+    
     var body: some View {
         TabView {
             MindfulnessView()
@@ -19,9 +23,17 @@ struct MainView: View {
                     Label("Profile", systemImage: "person")
                 }
         }
+        .onAppear{
+            showAuthSheet = !authViewModel.isSignedIn
+        }
+        
+        .sheet(isPresented: $showAuthSheet) {
+            LoginRegisterSheet(showAuthSheet: $showAuthSheet)
+        }
     }
 }
 
 #Preview {
     MainView()
+        .environmentObject(AuthViewModel())
 }
