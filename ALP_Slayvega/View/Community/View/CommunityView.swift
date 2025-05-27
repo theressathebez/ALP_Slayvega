@@ -170,10 +170,8 @@ struct ShareHeaderView: View {
                         communityLikeCount: 0,
                         communityDates: Date()
                     )
-                    
                     communityVM.createCommunity(newCommunity)
                     
-                    // Clear form
                     postText = ""
                     hashtags = ""
                     showUsername = false
