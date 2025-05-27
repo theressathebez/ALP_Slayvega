@@ -14,11 +14,13 @@ struct MainView: View {
     
     var body: some View {
         TabView {
+            CommunityView()
+                .tabItem{Label("Community", systemImage: "people.circle" )}
             MindfulnessView()
                 .tabItem {
                     Label("Mindfulness", systemImage: "brain.head.profile")
                 }
-            ProfileView()
+            ProfileSetupView(authVM: AuthViewModel())
                 .tabItem {
                     Label("Profile", systemImage: "person")
                 }

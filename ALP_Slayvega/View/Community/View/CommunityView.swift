@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct CommunityView: View {
+    @StateObject private var communityVM = CommunityViewModel()
+    @StateObject private var authVM = AuthViewModel()
     @State private var selectedTab: String = "Share"
 
     var body: some View {
@@ -39,7 +41,7 @@ struct CommunityView: View {
                 .background(Color.white)
 
                 if selectedTab == "Share" {
-                    ShareHeaderView()
+                    ShareHeaderView(communityVM: communityVM, authVM: authVM)
                         .background(Color.white)
                 }
             }
@@ -47,7 +49,7 @@ struct CommunityView: View {
             ScrollView {
                 VStack(spacing: 10) {
                     if selectedTab == "Share" {
-                        SharePostsView()
+                        SharePostsView(communities: communityVM.communities, communityVM: communityVM, authVM: authVM)
                     } else {
                         ExploreContentView()
                     }
@@ -60,6 +62,7 @@ struct CommunityView: View {
         .edgesIgnoringSafeArea(.bottom)
     }
 }
+
 struct SegmentedTabView: View {
     @Binding var selectedTab: String
     let tabs: [String]
@@ -113,12 +116,12 @@ struct TabButton: View {
     }
 }
 
-
-
-
 struct ShareHeaderView: View {
+    let communityVM: CommunityViewModel
+    let authVM: AuthViewModel
     @State private var showUsername: Bool = false
     @State private var postText: String = ""
+    @State private var hashtags: String = ""
 
     var body: some View {
         VStack(spacing: 10) {
@@ -139,6 +142,12 @@ struct ShareHeaderView: View {
                     }, alignment: .topLeading
                 )
 
+            // Hashtags input
+            TextField("Add hashtags (e.g., #MentalHealth #StayStrong)", text: $hashtags)
+                .padding(10)
+                .background(Color.white)
+                .cornerRadius(10)
+
             HStack {
                 Toggle(isOn: $showUsername) {
                     Text("Show Username?")
@@ -149,7 +158,25 @@ struct ShareHeaderView: View {
                 Spacer()
 
                 Button("Post") {
-                    // Handle post action
+                    guard !postText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+                    
+                    // Determine username based on toggle
+                    let displayUsername = showUsername ? authVM.myUser.getDisplayName() : "Anonymous"
+                    
+                    let newCommunity = CommunityModel(
+                        username: displayUsername,
+                        communityContent: postText,
+                        hashtags: hashtags,
+                        communityLikeCount: 0,
+                        communityDates: Date()
+                    )
+                    
+                    communityVM.createSpot(newCommunity)
+                    
+                    // Clear form
+                    postText = ""
+                    hashtags = ""
+                    showUsername = false
                 }
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundColor(.white)
@@ -163,29 +190,66 @@ struct ShareHeaderView: View {
     }
 }
 
-
 struct SharePostsView: View {
+    let communities: [CommunityModel]
+    let communityVM: CommunityViewModel
+    let authVM: AuthViewModel
+    
     var body: some View {
         VStack(spacing: 10) {
+            // Show user's posts from Firebase
+            ForEach(communities.sorted(by: { $0.communityDates > $1.communityDates })) { community in
+                CommunityContentCard(
+                    username: community.username,
+                    content: community.communityContent,
+                    timestamp: formatDate(community.communityDates),
+                    initialLikeCount: community.communityLikeCount,
+                    hashtags: parseHashtags(community.hashtags),
+                    communityId: community.id,
+                    userId: community.userId,
+                    currentUserId: authVM.user?.uid,
+                    onDelete: {
+                        // Delete community from Firebase
+                        communityVM.removeCommunity(withId: community.id)
+                    }
+                )
+            }
+            
             CommunityContentCard(
                 username: "Anonymous",
-                content:
-                    "Hang in there! Even the toughest days have 24 hours. You're stronger than you think and this too shall pass 🌟",
+                content: "Hang in there! Even the toughest days have 24 hours. You're stronger than you think and this too shall pass 🌟",
                 timestamp: "June 25, 2024",
                 initialLikeCount: 323,
-                hashtags: ["#KeepGoing", "#StayStrong"]
+                hashtags: ["#KeepGoing", "#StayStrong"],
+                communityId: "example1",
+                userId: "",
+                currentUserId: authVM.user?.uid,
+                onDelete: {}
             )
 
             CommunityContentCard(
                 username: "Drphnd",
-                content:
-                    "Life’s challenges can feel overwhelming, but remember that every storm runs out of rain.",
+                content: "Life's challenges can feel overwhelming, but remember that every storm runs out of rain.",
                 timestamp: "May 10, 2024",
                 initialLikeCount: 112,
-                hashtags: ["#MentalHealth", "#StayHopeful"]
+                hashtags: ["#MentalHealth", "#StayHopeful"],
+                communityId: "example2",
+                userId: "",
+                currentUserId: authVM.user?.uid,
+                onDelete: {}
             )
         }
         .padding()
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
+    }
+    
+    private func parseHashtags(_ hashtagString: String) -> [String] {
+        return hashtagString.components(separatedBy: " ").filter { !$0.isEmpty }
     }
 }
 
@@ -234,7 +298,6 @@ struct TrendingTagRow: View {
         .overlay(Divider(), alignment: .bottom)
     }
 }
-
 
 // Hex to Color converter
 extension Color {

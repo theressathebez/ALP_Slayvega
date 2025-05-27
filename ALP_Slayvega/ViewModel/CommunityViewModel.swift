@@ -1,10 +1,3 @@
-//
-//  CommunityViewModel.swift
-//  ALP_Slayvega
-//
-//  Created by student on 27/05/25.
-//
-
 import Foundation
 import FirebaseDatabase
 import FirebaseAuth
@@ -52,13 +45,22 @@ class CommunityViewModel: ObservableObject {
                 
                 for case let child as DataSnapshot in snapshot.children {
                     if let data = child.value as? [String: Any] {
+                        // Handle date parsing from Firebase
+                        var communityDate = Date()
+                        if let timestamp = data["communityDates"] as? TimeInterval {
+                            communityDate = Date(timeIntervalSince1970: timestamp / 1000)
+                        } else if let dateString = data["communityDates"] as? String {
+                            let formatter = ISO8601DateFormatter()
+                            communityDate = formatter.date(from: dateString) ?? Date()
+                        }
+                        
                         let community = CommunityModel(
                             id: data["id"] as? String ?? child.key,
                             username: data["username"] as? String ?? "",
                             communityContent: data["communityContent"] as? String ?? "",
                             hashtags: data["hashtags"] as? String ?? "",
                             communityLikeCount: data["communityLikeCount"] as? Int ?? 0,
-                            communityDates: data["communityDates"] as? Date ?? Date(),
+                            communityDates: communityDate,
                             userId: data["userId"] as? String ?? ""
                         )
                         fetched.append(community)
@@ -77,17 +79,30 @@ class CommunityViewModel: ObservableObject {
         var newCommunity = community
         newCommunity.userId = uid
         
-        guard let encoded = try? JSONEncoder().encode(newCommunity),
-              let dict = try? JSONSerialization.jsonObject(with: encoded) as? [String: Any] else {
-            print("Failed encode spot")
-            return
-        }
+        // Convert to dictionary manually to handle Date properly
+        let communityDict: [String: Any] = [
+            "id": newCommunity.id,
+            "username": newCommunity.username,
+            "communityContent": newCommunity.communityContent,
+            "hashtags": newCommunity.hashtags,
+            "communityLikeCount": newCommunity.communityLikeCount,
+            "communityDates": newCommunity.communityDates.timeIntervalSince1970 * 1000, // Convert to milliseconds
+            "userId": newCommunity.userId
+        ]
         
-        dbRef.child(newCommunity.id).setValue(dict)
+        dbRef.child(newCommunity.id).setValue(communityDict) { error, _ in
+            if let error = error {
+                print("Error creating post: \(error.localizedDescription)")
+            }
+        }
     }
 
     func removeCommunity(withId id: String) {
-        dbRef.child(id).removeValue()
+        dbRef.child(id).removeValue { error, _ in
+            if let error = error {
+                print("Error removing post: \(error.localizedDescription)")
+            }
+        }
     }
 
     func clearLocalData() {
