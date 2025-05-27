@@ -32,11 +32,12 @@ struct CommunityView: View {
             }
             .padding(.bottom, 25)
 
-            // Tab bar dan konten posting (jika Share)
+            // Tab bar and post content (if Share)
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     TabButton(title: "Share", selectedTab: $selectedTab)
                     TabButton(title: "Explore", selectedTab: $selectedTab)
+                    TabButton(title: "My Posts", selectedTab: $selectedTab)
                 }
                 .background(Color.white)
 
@@ -50,8 +51,10 @@ struct CommunityView: View {
                 VStack(spacing: 10) {
                     if selectedTab == "Share" {
                         SharePostsView(communities: communityVM.communities, communityVM: communityVM, authVM: authVM)
-                    } else {
+                    } else if selectedTab == "Explore" {
                         ExploreContentView()
+                    } else {
+                        MyPostsView(communities: communityVM.userCommunities, communityVM: communityVM, authVM: authVM)
                     }
                 }
             }
@@ -98,7 +101,7 @@ struct TabButton: View {
                 .foregroundColor(isSelected ? Color(hex: "#FFA075") : Color.gray)
                 .fontWeight(.semibold)
                 .padding(.vertical, 10)
-                .frame(minWidth: 100)
+                .frame(minWidth: 80)
                 .frame(maxWidth: .infinity)
                 .background(
                     Group {
@@ -195,7 +198,7 @@ struct SharePostsView: View {
     
     var body: some View {
         VStack(spacing: 10) {
-            // Show user's posts from Firebase
+            // Show all posts from all users (sorted by date)
             ForEach(communities.sorted(by: { $0.communityDates > $1.communityDates })) { community in
                 CommunityContentCard(
                     username: community.username,
@@ -207,12 +210,15 @@ struct SharePostsView: View {
                     userId: community.userId,
                     currentUserId: authVM.user?.uid,
                     onDelete: {
-                        // Delete community from Firebase
-                        communityVM.removeCommunity(withId: community.id)
+                        // Only allow delete if it's user's own post
+                        if community.userId == authVM.user?.uid {
+                            communityVM.removeCommunity(withId: community.id)
+                        }
                     }
                 )
             }
             
+            // Example posts (you can remove these if you want only real posts)
             CommunityContentCard(
                 username: "Anonymous",
                 content: "Hang in there! Even the toughest days have 24 hours. You're stronger than you think and this too shall pass 🌟",
@@ -236,6 +242,63 @@ struct SharePostsView: View {
                 currentUserId: authVM.user?.uid,
                 onDelete: {}
             )
+        }
+        .padding()
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
+    }
+    
+    private func parseHashtags(_ hashtagString: String) -> [String] {
+        return hashtagString.components(separatedBy: " ").filter { !$0.isEmpty }
+    }
+}
+
+// New view for user's own posts
+struct MyPostsView: View {
+    let communities: [CommunityModel]
+    let communityVM: CommunityViewModel
+    let authVM: AuthViewModel
+    
+    var body: some View {
+        VStack(spacing: 10) {
+            if communities.isEmpty {
+                VStack(spacing: 20) {
+                    Image(systemName: "doc.text")
+                        .font(.system(size: 50))
+                        .foregroundColor(.gray)
+                    
+                    Text("No posts yet")
+                        .font(.title2)
+                        .foregroundColor(.gray)
+                    
+                    Text("Start sharing your thoughts with the community!")
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.top, 50)
+            } else {
+                // Show only user's posts
+                ForEach(communities.sorted(by: { $0.communityDates > $1.communityDates })) { community in
+                    CommunityContentCard(
+                        username: community.username,
+                        content: community.communityContent,
+                        timestamp: formatDate(community.communityDates),
+                        initialLikeCount: community.communityLikeCount,
+                        hashtags: parseHashtags(community.hashtags),
+                        communityId: community.id,
+                        userId: community.userId,
+                        currentUserId: authVM.user?.uid,
+                        onDelete: {
+                            communityVM.removeCommunity(withId: community.id)
+                        }
+                    )
+                }
+            }
         }
         .padding()
     }
