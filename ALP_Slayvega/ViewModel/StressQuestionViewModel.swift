@@ -66,6 +66,16 @@ class StressQuestionViewModel: ObservableObject {
         }
     }
 
+    var stressLevelBars: Int {
+        switch stressLevel {
+        case "Low Stress": return 1
+        case "Moderate Stress": return 2
+        case "High Stress": return 3
+        case "Very High Stress": return 4
+        default: return 0
+        }
+    }
+
     var stressDescription: String {
         switch stressLevel {
         case "Low Stress":
