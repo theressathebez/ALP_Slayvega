@@ -1,6 +1,6 @@
 import Foundation
 
-struct JournalModel: Identifiable, Codable {
+struct JournalModel: Identifiable {
     var id: String = UUID().uuidString
     var journalTitle: String
     var journalDescription: String

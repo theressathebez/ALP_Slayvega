@@ -1,54 +1,77 @@
 import SwiftUI
 
-struct JournalMenuView: View {
-    let sampleJournals: [JournalModel] = [
-        JournalModel(journalTitle: "Grateful Thoughts", journalDescription: "Had a productive day today!", journalDate: Date()),
-        JournalModel(journalTitle: "Reflecting...", journalDescription: "Feeling peaceful after a walk.", journalDate: Date().addingTimeInterval(-86400))
-    ]
+struct JournalingHomeView: View {
+    var body: some View {
+        JournalMainView()
+    }
+}
+
+struct JournalMainView: View {
+    @StateObject private var viewModel = JournalViewModel()
+    @State private var isPresentingAddJournal = false
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading) {
-                Text("🧘 Good Morning")
-                    .font(.title2).bold()
+            ZStack(alignment: .bottom) {
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.white, Color(.systemGray6)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
 
-                Text("How have things\nbeen today ?")
-                    .font(.title).bold()
-                    .padding(.vertical)
+                VStack(spacing: 0) {
+                    GreetingsViewCard()
 
-                ScrollView {
-                    VStack(spacing: 12) {
-                        ForEach(sampleJournals, id: \.id) { journal in
-                            NavigationLink(destination: ViewJournalView(journal: journal)) {
-                                VStack(alignment: .leading) {
-                                    Text(journal.journalDate, style: .date)
-                                        .bold()
-                                    Text(journal.journalTitle)
-                                        .lineLimit(1)
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Your Journal")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Color(hex: "3F3F59"))
+                            .padding(.horizontal, 24)
+
+                        ScrollView {
+                            LazyVStack(spacing: 12) {
+                                ForEach(viewModel.journals) { entry in
+                                    NavigationLink(destination: JournalDetailView(viewModel: viewModel, journal: entry)) {
+                                        JournalEntryCard(entry: entry)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
                                 }
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(RoundedRectangle(cornerRadius: 10).stroke(Color.gray.opacity(0.5)))
                             }
+                            .padding(.horizontal, 24)
                         }
                     }
-                }
 
-                Button("Add Journal") {
-                    // Placeholder
+                    Spacer()
+
+                    Button(action: {
+                        isPresentingAddJournal = true
+                    }) {
+                        Text("Add Journal")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 56)
+                            .background(Color(hex: "FF8F6D"))
+                            .cornerRadius(28)
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 32)
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.orange)
-                .foregroundColor(.white)
-                .cornerRadius(25)
-                .padding(.top)
             }
-            .padding()
             .navigationBarHidden(true)
+        }
+        .sheet(isPresented: $isPresentingAddJournal) {
+            JournalInputView { newEntry in
+                viewModel.journals.append(newEntry)
+            }
         }
     }
 }
+
+
+
 #Preview {
-    JournalMenuView()
+    JournalingHomeView()
 }
