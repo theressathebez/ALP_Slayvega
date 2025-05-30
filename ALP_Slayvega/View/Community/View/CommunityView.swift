@@ -214,33 +214,59 @@ struct SharePostsView: View {
                         if community.userId == authVM.user?.uid {
                             communityVM.removeCommunity(withId: community.id)
                         }
-                    }
+                    },
+                    community: community, // Pass the complete community model
+                    authVM: authVM // Pass the AuthViewModel
                 )
             }
             
             // Example posts (you can remove these if you want only real posts)
-            CommunityContentCard(
+            let exampleCommunity1 = CommunityModel(
+                id: "example1",
                 username: "Anonymous",
-                content: "Hang in there! Even the toughest days have 24 hours. You're stronger than you think and this too shall pass 🌟",
+                communityContent: "Hang in there! Even the toughest days have 24 hours. You're stronger than you think and this too shall pass 🌟",
+                hashtags: "#KeepGoing #StayStrong",
+                communityLikeCount: 323,
+                communityDates: Calendar.current.date(byAdding: .day, value: -5, to: Date()) ?? Date(),
+                userId: ""
+            )
+            
+            CommunityContentCard(
+                username: exampleCommunity1.username,
+                content: exampleCommunity1.communityContent,
                 timestamp: "June 25, 2024",
-                initialLikeCount: 323,
-                hashtags: ["#KeepGoing", "#StayStrong"],
-                communityId: "example1",
-                userId: "",
+                initialLikeCount: exampleCommunity1.communityLikeCount,
+                hashtags: parseHashtags(exampleCommunity1.hashtags),
+                communityId: exampleCommunity1.id,
+                userId: exampleCommunity1.userId,
                 currentUserId: authVM.user?.uid,
-                onDelete: {}
+                onDelete: {},
+                community: exampleCommunity1,
+                authVM: authVM
             )
 
-            CommunityContentCard(
+            let exampleCommunity2 = CommunityModel(
+                id: "example2",
                 username: "Drphnd",
-                content: "Life's challenges can feel overwhelming, but remember that every storm runs out of rain.",
+                communityContent: "Life's challenges can feel overwhelming, but remember that every storm runs out of rain.",
+                hashtags: "#MentalHealth #StayHopeful",
+                communityLikeCount: 112,
+                communityDates: Calendar.current.date(byAdding: .day, value: -10, to: Date()) ?? Date(),
+                userId: ""
+            )
+            
+            CommunityContentCard(
+                username: exampleCommunity2.username,
+                content: exampleCommunity2.communityContent,
                 timestamp: "May 10, 2024",
-                initialLikeCount: 112,
-                hashtags: ["#MentalHealth", "#StayHopeful"],
-                communityId: "example2",
-                userId: "",
+                initialLikeCount: exampleCommunity2.communityLikeCount,
+                hashtags: parseHashtags(exampleCommunity2.hashtags),
+                communityId: exampleCommunity2.id,
+                userId: exampleCommunity2.userId,
                 currentUserId: authVM.user?.uid,
-                onDelete: {}
+                onDelete: {},
+                community: exampleCommunity2,
+                authVM: authVM
             )
         }
         .padding()
@@ -295,7 +321,9 @@ struct MyPostsView: View {
                         currentUserId: authVM.user?.uid,
                         onDelete: {
                             communityVM.removeCommunity(withId: community.id)
-                        }
+                        },
+                        community: community, // Pass the complete community model
+                        authVM: authVM // Pass the AuthViewModel
                     )
                 }
             }

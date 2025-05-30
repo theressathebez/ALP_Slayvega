@@ -5,6 +5,7 @@
 //  Created by student on 22/05/25.
 //
 import SwiftUI
+import FirebaseAuth
 
 struct CommunityContentCard: View {
     var username: String
@@ -16,10 +17,13 @@ struct CommunityContentCard: View {
     var userId: String // Add userId to identify post owner
     var currentUserId: String? // Current logged in user ID
     var onDelete: () -> Void
+    var community: CommunityModel // Add the complete community model
+    var authVM: AuthViewModel // Add AuthViewModel for navigation
     
     @State private var isLiked: Bool = false
     @State private var currentLikeCount: Int = 0
     @State private var showDeleteAlert: Bool = false
+    @State private var showCommentView: Bool = false
 
     var body: some View {
         ZStack {
@@ -60,9 +64,9 @@ struct CommunityContentCard: View {
 
                     Spacer()
 
-                    // Comment Button
+                    // Comment Button - Updated to navigate to CommentDetailView
                     Button(action: {
-                        print("Comment button tapped")
+                        showCommentView = true
                     }) {
                         Image(systemName: "bubble.right")
                             .foregroundColor(.gray)
@@ -102,6 +106,9 @@ struct CommunityContentCard: View {
         } message: {
             Text("Are you sure you want to delete this post?")
         }
+        .sheet(isPresented: $showCommentView) {
+            CommentDetailView(community: community, authVM: authVM)
+        }
     }
 }
 
@@ -115,6 +122,16 @@ struct CommunityContentCard: View {
         communityId: "preview",
         userId: "",
         currentUserId: nil,
-        onDelete: {}
+        onDelete: {},
+        community: CommunityModel(
+            id: "preview",
+            username: "Anonymous",
+            communityContent: "Hang in there! Even the toughest days have 24 hours. You're stronger than you think and this too shall pass 🌟",
+            hashtags: "#KeepGoing #StayStrong",
+            communityLikeCount: 10,
+            communityDates: Date(),
+            userId: ""
+        ),
+        authVM: AuthViewModel()
     )
 }
