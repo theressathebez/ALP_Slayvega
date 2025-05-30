@@ -36,7 +36,6 @@ struct CommunityView: View {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
                     TabButton(title: "Share", selectedTab: $selectedTab)
-                    TabButton(title: "Explore", selectedTab: $selectedTab)
                     TabButton(title: "My Posts", selectedTab: $selectedTab)
                 }
                 .background(Color.white)
@@ -51,8 +50,6 @@ struct CommunityView: View {
                 VStack(spacing: 10) {
                     if selectedTab == "Share" {
                         SharePostsView(communities: communityVM.communities, communityVM: communityVM, authVM: authVM)
-                    } else if selectedTab == "Explore" {
-                        ExploreContentView()
                     } else {
                         MyPostsView(communities: communityVM.userCommunities, communityVM: communityVM, authVM: authVM)
                     }
@@ -339,28 +336,6 @@ struct MyPostsView: View {
     
     private func parseHashtags(_ hashtagString: String) -> [String] {
         return hashtagString.components(separatedBy: " ").filter { !$0.isEmpty }
-    }
-}
-
-struct ExploreContentView: View {
-    var body: some View {
-        ZStack {
-            Color.white
-                .ignoresSafeArea()
-
-            VStack(alignment: .leading, spacing: 20) {
-                Text("Today's Updates")
-                    .font(.headline)
-                    .foregroundColor(.black)
-
-                VStack(spacing: 16) {
-                    TrendingTagRow(tag: "#MorningSelfLove")
-                    TrendingTagRow(tag: "#TGIF")
-                    TrendingTagRow(tag: "#PositivePeerPressure")
-                }
-            }
-            .padding()
-        }
     }
 }
 

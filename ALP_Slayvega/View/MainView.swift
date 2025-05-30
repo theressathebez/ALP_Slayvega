@@ -15,7 +15,7 @@ struct MainView: View {
     var body: some View {
         TabView {
             CommunityView()
-                .tabItem{Label("Community", systemImage: "people.circle" )}
+                .tabItem{Label("Shares", systemImage: "person.3.fill" )}
             MindfulnessView()
                 .tabItem {
                     Label("Mindfulness", systemImage: "brain.head.profile")
