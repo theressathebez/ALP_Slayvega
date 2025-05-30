@@ -46,6 +46,7 @@ struct JournalEntryCard: View {
     }
 }
 
+
 extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
@@ -66,4 +67,12 @@ extension Color {
             opacity: Double(a) / 255
         )
     }
+
+    // Tambahkan warna khusus sebagai static var
+    static let cardGradientTop = Color(hex: "#FFEFF2")
+    static let cardGradientBottom = Color(hex: "#FFFFFF")
+    static let cardText = Color(hex: "#4A4A4A") // contoh warna teks utama
+    static let cardSubtitle = Color(hex: "#8E8E93") // contoh warna subtitle
+    static let cardBorder = Color(hex: "#D9D9D9")
 }
+
