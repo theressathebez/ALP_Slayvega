@@ -10,26 +10,18 @@ import SwiftUI
 struct CheckStressLevelView: View {
     var body: some View {
         VStack {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Check Stress Level")
-                    .font(.largeTitle.bold())
-                    .foregroundColor(.primary)
-
-                Text("Let’s take a few moments to reflect.")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            .padding(.top, 30)
-            .padding(.trailing, 40)
-
-            Spacer()
+            Text("Check Stress Level")
+                .font(.largeTitle.bold())
+                .foregroundColor(.primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal)
+                .padding(.top, 30)
 
             Image("Stress")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 80, height: 80)
-                .foregroundColor(Color(red: 1.0, green: 0.56, blue: 0.427))
-                .padding(.bottom, 8)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal)
 
             VStack(spacing: 12) {
                 Text("How This Works")
@@ -52,10 +44,10 @@ struct CheckStressLevelView: View {
                 Text("Continue")
                     .fontWeight(.semibold)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 50)
+                    .frame(height: 60)
                     .background(Color(red: 1.0, green: 0.56, blue: 0.427))
                     .foregroundColor(.white)
-                    .cornerRadius(12)
+                    .cornerRadius(30)
                     .padding(.horizontal)
                     .shadow(
                         color: Color.black.opacity(0.1),
@@ -65,7 +57,7 @@ struct CheckStressLevelView: View {
                     )
             }
             .padding(.bottom, 30)
-            
+
             Spacer()
         }
         .navigationTitle("Calibrate")
