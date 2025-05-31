@@ -25,7 +25,7 @@ struct CommentDetailView: View {
                 Button("Back") {
                     dismiss()
                 }
-                .foregroundColor(Color(hex: "#FFA075"))
+                .foregroundColor(Color.fromHex( "#FFA075"))
                 
                 Spacer()
                 
@@ -65,7 +65,7 @@ struct CommentDetailView: View {
                     Text(community.hashtags)
                         .font(.body)
                         .fontWeight(.bold)
-                        .foregroundColor(Color(hex: "#FFA075"))
+                        .foregroundColor(Color.fromHex("#FFA075"))
                 }
                 
                 HStack {
@@ -143,7 +143,7 @@ struct CommentDetailView: View {
                         Text("Show Username")
                             .font(.caption)
                     }
-                    .toggleStyle(SwitchToggleStyle(tint: Color(hex: "#FFA075")))
+                    .toggleStyle(SwitchToggleStyle(tint: Color.fromHex("#FFA075")))
                     .scaleEffect(0.8)
                     
                     Spacer()
@@ -166,7 +166,7 @@ struct CommentDetailView: View {
                             .padding(12)
                             .background(
                                 newCommentText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?
-                                Color.gray : Color(hex: "#FFA075")
+                                Color.gray : Color.fromHex("#FFA075")
                             )
                             .clipShape(Circle())
                     }

@@ -1,9 +1,7 @@
 import SwiftUI
 
 struct QuotesCardView: View {
-    let quote: String
-    let emoji1: String
-    let emoji2: String
+    let quote: Quote
 
     var body: some View {
         ZStack {
@@ -21,27 +19,23 @@ struct QuotesCardView: View {
                 )
                 .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 4)
 
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Text("Quotes of the Day")
-                        .font(.system(size: 18, weight: .medium))
-                        .foregroundColor(.cardSubtitle)
-                        .padding(.top, 1)
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Quotes of the Day")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.cardSubtitle)
 
-
-                }
-
-                HStack(alignment: .center) {
-                    Text(quote)
-                        .font(.system(size: 28, weight: .semibold))
+                HStack(alignment: .center, spacing: 12) {
+                    Text("“\(quote.text)”")
+                        .font(.system(size: 20, weight: .semibold))
                         .foregroundColor(.cardText)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(3)
+                        .multilineTextAlignment(.leading)
 
                     Spacer()
 
-                    HStack(spacing: 8) {
-                        Text(emoji1)
-                        Text(emoji2)
+                    VStack(spacing: 4) {
+                        Text(quote.emoji1)
+                        Text(quote.emoji2)
                     }
                     .font(.system(size: 26))
                 }
@@ -49,14 +43,12 @@ struct QuotesCardView: View {
             .padding(20)
         }
         .frame(maxWidth: .infinity, minHeight: 140, maxHeight: 160)
-        .padding(.horizontal, 10)
     }
 }
 
 #Preview {
     QuotesCardView(
-        quote: "The universe will provide for me",
-        emoji1: "🫧",
-        emoji2: "🌍"
+        quote: Quote(text: "The universe will provide for me", emoji1: "🫧", emoji2: "🌍")
     )
 }
+

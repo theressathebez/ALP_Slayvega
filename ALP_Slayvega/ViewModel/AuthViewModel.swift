@@ -88,4 +88,14 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
+    
+    func fetchUserProfile() {
+        guard let currentUser = Auth.auth().currentUser else { return }
+
+        self.user = currentUser
+        self.myUser.uid = currentUser.uid
+        self.myUser.email = currentUser.email ?? ""
+        self.myUser.name = currentUser.displayName ?? ""
+    }
+
 }

@@ -1,64 +1,85 @@
-
 import SwiftUI
 
 struct ProfileCardView: View {
-    let user: MyUser
-    let notificationCount: Int
+    var user: MyUser
+    var notificationCount: Int
+
+    @EnvironmentObject var authVM: AuthViewModel
+    @State private var goToProfile = false
+    @State var showAuthSheet = false
 
     var body: some View {
-        HStack {
-            // Avatar Circle
-            ZStack {
-                Circle()
-                    .fill(Color(hex: "#FDECEA")) // Soft background
-                    .frame(width: 60, height: 60)
+        ZStack(alignment: .topTrailing) {
+            HStack(spacing: 16) {
+                // ✅ Avatar (bisa diklik untuk ke Profile)
+                Button(action: {
+                    goToProfile = true
+                }) {
+                    Circle()
+                        .fill(Color.fromHex("#FFA075").opacity(0.3))
+                        .frame(width: 60, height: 60)
+                        .overlay(
+                            Image("sampleProfile") // ganti sesuai image atau pakai Text initial
+                                .resizable()
+                                .scaledToFit()
+                                .clipShape(Circle())
+                                .padding(8)
+                        )
+                }
 
-                Image(systemName: "person.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 32, height: 32)
-                    .foregroundColor(Color(hex: "#3F3F59"))
+                // ✅ Text: Welcome, Leon Smith
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Welcome,")
+                        .font(.system(size: 16))
+                        .foregroundColor(.gray)
+
+                    Text(user.name.isEmpty ? "User" : user.name)
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(Color.fromHex("#2C2C45"))
+                }
+
+                Spacer()
             }
-            .overlay(
-                Circle()
-                    .stroke(Color(hex: "#FF8F6D"), lineWidth: 3)
-            )
+            .padding(.trailing, 48) // berikan ruang untuk ikon notifikasi
 
-            // Welcome Text
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Welcome,")
-                    .font(.system(size: 18))
-                    .foregroundColor(Color(hex: "#3F3F59"))
-
-                Text(user.name)
-                    .font(.system(size: 20, weight: .bold))
-                    .foregroundColor(Color(hex: "#3F3F59"))
-            }
-
-            Spacer()
-
-            // Notification Bell with Badge
+            // ✅ Notification icon
             ZStack(alignment: .topTrailing) {
                 Image(systemName: "bell.fill")
-                    .resizable()
-                    .frame(width: 24, height: 24)
-                    .foregroundColor(Color(hex: "#3F3F59"))
+                    .font(.system(size: 22))
+                    .foregroundColor(Color.fromHex("#2C2C45"))
+                    .padding(.top, 4)
+                    .padding(.trailing, 8)
 
                 if notificationCount > 0 {
                     Text("\(notificationCount)")
                         .font(.caption2)
                         .foregroundColor(.white)
-                        .padding(6)
-                        .background(Circle().fill(Color(hex: "#FF8F6D")))
-                        .offset(x: 10, y: -10)
+                        .padding(5)
+                        .background(Circle().fill(Color.fromHex("#FF8F6D")))
+                        .offset(x: 4, y: -4)
                 }
             }
+
+            // ✅ NavigationLink to ProfileView
+            NavigationLink(
+                destination: ProfileView(showAuthSheet: $showAuthSheet, authVM: authVM),
+                isActive: $goToProfile,
+                label: {
+                    EmptyView()
+                }
+            )
+            .hidden()
         }
+        .onAppear{
+            showAuthSheet = !authVM.isSignedIn
+        }
+        
+        .sheet(isPresented: $showAuthSheet) {
+            LoginRegisterSheet(showAuthSheet: $showAuthSheet)
+        }
+        .accentColor(Color.fromHex("#FF8F6D"))
         .padding(.horizontal, 20)
-        .padding(.vertical, 12)
+        .padding(.top, 8)
     }
 }
 
-#Preview {
-    ProfileCardView(user: MyUser(name: "Leon Smith"), notificationCount: 9)
-}

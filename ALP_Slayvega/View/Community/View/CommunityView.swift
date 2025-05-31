@@ -95,7 +95,7 @@ struct TabButton: View {
             }
         }) {
             Text(title)
-                .foregroundColor(isSelected ? Color(hex: "#FFA075") : Color.gray)
+                .foregroundColor(isSelected ? Color.fromHex("#FFA075") : Color.gray)
                 .fontWeight(.semibold)
                 .padding(.vertical, 10)
                 .frame(minWidth: 80)
@@ -153,8 +153,8 @@ struct ShareHeaderView: View {
                     Text("Show Username?")
                         .font(.subheadline)
                 }
-                .toggleStyle(SwitchToggleStyle(tint: Color(hex: "#FFA075")))
-
+                .toggleStyle(SwitchToggleStyle(tint: Color.fromHex("#FFA075")))
+                
                 Spacer()
 
                 Button("Post") {
@@ -180,7 +180,7 @@ struct ShareHeaderView: View {
                 .foregroundColor(.white)
                 .padding(.vertical, 7.5)
                 .padding(.horizontal, 10)
-                .background(Color(hex: "#FFA075"))
+                .background(Color.fromHex("#FFA075"))
                 .cornerRadius(15)
             }
         }
@@ -364,37 +364,37 @@ struct TrendingTagRow: View {
 }
 
 // Hex to Color converter
-extension Color {
-    init(hex: String) {
-        let hex = hex.trimmingCharacters(
-            in: CharacterSet.alphanumerics.inverted
-        )
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 6:
-            (a, r, g, b) = (
-                255, (int >> 16) & 0xff, (int >> 8) & 0xff, int & 0xff
-            )
-        case 8:
-            (a, r, g, b) = (
-                (int >> 24) & 0xff, (int >> 16) & 0xff, (int >> 8) & 0xff,
-                int & 0xff
-            )
-        default:
-            (a, r, g, b) = (255, 255, 255, 255)
-        }
-
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: Double(a) / 255
-        )
-    }
-}
+//extension Color {
+//    init(hex: String) {
+//        let hex = hex.trimmingCharacters(
+//            in: CharacterSet.alphanumerics.inverted
+//        )
+//        var int: UInt64 = 0
+//        Scanner(string: hex).scanHexInt64(&int)
+//        let a, r, g, b: UInt64
+//        switch hex.count {
+//        case 6:
+//            (a, r, g, b) = (
+//                255, (int >> 16) & 0xff, (int >> 8) & 0xff, int & 0xff
+//            )
+//        case 8:
+//            (a, r, g, b) = (
+//                (int >> 24) & 0xff, (int >> 16) & 0xff, (int >> 8) & 0xff,
+//                int & 0xff
+//            )
+//        default:
+//            (a, r, g, b) = (255, 255, 255, 255)
+//        }
+//
+//        self.init(
+//            .sRGB,
+//            red: Double(r) / 255,
+//            green: Double(g) / 255,
+//            blue: Double(b) / 255,
+//            opacity: Double(a) / 255
+//        )
+//    }
+//}
 
 // Preview
 #Preview {

@@ -25,21 +25,21 @@ struct JournalDetailView: View {
                 }) {
                     Image(systemName: "xmark")
                         .font(.title2)
-                        .foregroundColor(Color(hex: "3F3F59"))
+                        .foregroundColor(Color.fromHex("3F3F59"))
                 }
 
                 Spacer()
 
                 Text("My Journal")
                     .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(Color(hex: "3F3F59"))
+                    .foregroundColor(Color.fromHex("3F3F59"))
 
                 Spacer()
 
                 Button("Edit") {
                     isEditing.toggle()
                 }
-                .foregroundColor(Color(hex: "FF7765"))
+                .foregroundColor(Color.fromHex("FF7765"))
                 .font(.system(size: 16, weight: .medium))
             }
             .padding(.horizontal)
@@ -53,14 +53,14 @@ struct JournalDetailView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Journal Entry")
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(Color(hex: "3F3F59"))
+                    .foregroundColor(Color.fromHex("3F3F59"))
 
                 if isEditing {
                     TextField("Entry title", text: $editedTitle)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 } else {
                     Text(journal.journalTitle)
-                        .foregroundColor(Color(hex: "3F3F59"))
+                        .foregroundColor(Color.fromHex("3F3F59"))
                 }
             }
             .padding(.horizontal)
@@ -68,7 +68,7 @@ struct JournalDetailView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Description")
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(Color(hex: "3F3F59"))
+                    .foregroundColor(Color.fromHex("3F3F59"))
 
                 if isEditing {
                     TextEditor(text: $editedDescription)
@@ -79,7 +79,7 @@ struct JournalDetailView: View {
                         )
                 } else {
                     Text(journal.journalDescription)
-                        .foregroundColor(Color(hex: "3F3F59"))
+                        .foregroundColor(Color.fromHex("3F3F59"))
                 }
             }
             .padding(.horizontal)
@@ -109,7 +109,7 @@ struct JournalDetailView: View {
                         .font(.system(size: 18, weight: .semibold))
                         .frame(maxWidth: .infinity)
                         .frame(height: 56)
-                        .background(Color(hex: "FF8F6D"))
+                        .background(Color.fromHex("FF8F6D"))
                         .cornerRadius(28)
                 }
                 .padding(.horizontal)

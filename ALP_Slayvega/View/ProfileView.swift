@@ -31,12 +31,12 @@ struct ProfileView: View {
                     VStack(spacing: 16) {
                         // Profile Picture Placeholder
                         Circle()
-                            .fill(Color(hex: "#FFA075").opacity(0.3))
+                            .fill(Color("#FFA075").opacity(0.3))
                             .frame(width: 100, height: 100)
                             .overlay(
                                 Text(String(authVM.myUser.getDisplayName().prefix(1)).uppercased())
                                     .font(.system(size: 36, weight: .bold))
-                                    .foregroundColor(Color(hex: "#FFA075"))
+                                    .foregroundColor(Color("#FFA075"))
                             )
                         
                         Text(authVM.myUser.getDisplayName())
@@ -101,7 +101,7 @@ struct ProfileView: View {
                                 }
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
-                                .background(Color(hex: "#FFA075"))
+                                .background(Color("#FFA075"))
                                 .foregroundColor(.white)
                                 .cornerRadius(20)
                                 .disabled(isLoading)
@@ -114,7 +114,7 @@ struct ProfileView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
-                            .background(Color(hex: "#FFA075"))
+                            .background(Color("#FFA075"))
                             .foregroundColor(.white)
                             .cornerRadius(20)
                             .padding(.horizontal)
@@ -291,7 +291,7 @@ struct ChangePasswordView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(Color(hex: "#FFA075"))
+                .background(Color("#FFA075"))
                 .foregroundColor(.white)
                 .cornerRadius(20)
                 .padding(.horizontal)

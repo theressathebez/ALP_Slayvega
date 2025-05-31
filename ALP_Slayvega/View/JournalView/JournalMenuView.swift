@@ -27,7 +27,7 @@ struct JournalMainView: View {
                         Text("Your Journal")
                             .font(.title3)
                             .fontWeight(.semibold)
-                            .foregroundColor(Color(hex: "3F3F59"))
+                            .foregroundColor(Color.fromHex("3F3F59"))
                             .padding(.horizontal, 24)
 
                         ScrollView {
@@ -53,7 +53,7 @@ struct JournalMainView: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .frame(height: 56)
-                            .background(Color(hex: "FF8F6D"))
+                            .background(Color.fromHex("FF8F6D"))
                             .cornerRadius(28)
                     }
                     .padding(.horizontal, 24)

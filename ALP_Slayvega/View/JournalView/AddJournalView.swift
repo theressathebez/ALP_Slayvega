@@ -14,7 +14,7 @@ struct JournalInputView: View {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Journal Entry")
                     .font(.headline)
-                    .foregroundColor(Color(hex: "3F3F59"))
+                    .foregroundColor(Color.fromHex("3F3F59"))
 
                 TextField("What's on your mind..", text: $title)
                     .autocapitalization(.none)
@@ -29,7 +29,7 @@ struct JournalInputView: View {
 
                 Text("Description")
                     .font(.headline)
-                    .foregroundColor(Color(hex: "3F3F59"))
+                    .foregroundColor(Color.fromHex("3F3F59"))
 
                 TextEditor(text: $description)
                     .autocapitalization(.none) 
@@ -64,7 +64,7 @@ struct JournalInputView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 56)
                     .background(LinearGradient(
-                        gradient: Gradient(colors: [Color(hex: "FF8F6D"), Color(hex: "FF7765")]),
+                        gradient: Gradient(colors: [Color.fromHex("FF8F6D"), Color.fromHex("FF7765")]),
                         startPoint: .leading,
                         endPoint: .trailing
                     ))

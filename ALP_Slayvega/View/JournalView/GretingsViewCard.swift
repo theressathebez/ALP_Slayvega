@@ -9,15 +9,15 @@ struct GreetingsViewCard: View {
                 Text(getGreeting())
                     .font(.title2)
                     .fontWeight(.medium)
-                    .foregroundColor(Color(hex: "3F3F59"))
+                    .foregroundColor(Color.fromHex("3F3F59"))
                     .frame(maxWidth: .infinity)
                     .padding(.top, 60)
 
                 ZStack {
                     RadialGradient(
                         gradient: Gradient(colors: [
-                            Color(hex: "FF8F6D").opacity(0.25),
-                            Color(hex: "FF8F6D").opacity(0.0)
+                            Color.fromHex("FF8F6D").opacity(0.25),
+                            Color.fromHex("FF8F6D").opacity(0.0)
                         ]),
                         center: .center,
                         startRadius: 35,
@@ -28,7 +28,7 @@ struct GreetingsViewCard: View {
 
                     Text("How have things\nbeen today ?")
                         .font(.system(size: 32, weight: .bold))
-                        .foregroundColor(Color(hex: "3F3F59"))
+                        .foregroundColor(Color.fromHex("3F3F59"))
                         .multilineTextAlignment(.center)
                         .padding(.bottom, 15)
                 }

@@ -7,35 +7,43 @@
 
 import SwiftUI
 
-struct MainView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel //add EnvObj
+struct MainTabView: View {
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @StateObject var communityVM = CommunityViewModel()
+    @StateObject var journalVM = JournalViewModel()
     @State var showAuthSheet = false //add sheet state
-    
     
     var body: some View {
         TabView {
-            CommunityView()
-                .tabItem{Label("Shares", systemImage: "person.3.fill" )}
+            HomeView()
+                .tabItem {
+                    Image(systemName: "house.fill")
+                    Text("Home")
+                }
+
             MindfulnessView()
                 .tabItem {
                     Label("Mindfulness", systemImage: "brain.head.profile")
                 }
-            ProfileView(showAuthSheet: $showAuthSheet, authVM: AuthViewModel())
+
+            CommunityView()
                 .tabItem {
-                    Label("Profile", systemImage: "person")
+                    Image(systemName: "person.3.fill")
+                    Text("Shares")
+                }
+            
+            JournalMainView()
+                .environmentObject(journalVM)
+                .tabItem {
+                    Label("Journal", systemImage: "book.closed.fill")
                 }
         }
-        .onAppear{
-            showAuthSheet = !authViewModel.isSignedIn
-        }
-        
-        .sheet(isPresented: $showAuthSheet) {
-            LoginRegisterSheet(showAuthSheet: $showAuthSheet)
-        }
+        .accentColor(Color.fromHex("#FF8F6D")) // Warna utama tab yang dipilih
     }
 }
 
-#Preview {
-    MainView()
-        .environmentObject(AuthViewModel())
-}
+//#Preview {
+//    MainTabView()
+//        .environmentObject(AuthViewModel())
+//        .environmentObject(CommentViewModel())
+//}

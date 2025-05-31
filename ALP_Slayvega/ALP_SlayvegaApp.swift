@@ -11,7 +11,9 @@ import FirebaseAppCheck
 
 @main
 struct ALP_SlayvegaApp: App {
-    @StateObject private var authViewModel = AuthViewModel()
+    @StateObject var authViewModel = AuthViewModel()
+    @StateObject var quotesVM = QuotesViewModel()
+    @StateObject var communityVM = CommunityViewModel()
     
     init(){
         FirebaseApp.configure()
@@ -23,8 +25,10 @@ struct ALP_SlayvegaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MainView()
+            MainTabView()
                 .environmentObject(authViewModel)
+                .environmentObject(quotesVM)
+                .environmentObject(communityVM)
         }
     }
 }
