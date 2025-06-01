@@ -20,6 +20,7 @@ struct BreatheOutView: View {
                 GameView()
             }
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 

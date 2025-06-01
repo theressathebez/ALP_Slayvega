@@ -8,24 +8,34 @@
 import Foundation
 
 struct GameConfiguration {
-    static let gameDuration: TimeInterval = 180 // 3 minutes
+    static let gameDuration: TimeInterval = 180  // 3 minutes
     static let pressureSpawnInterval: TimeInterval = 5.0
     static let breathingRadiusExpanded: CGFloat = 120
     static let breathingRadiusNormal: CGFloat = 80
-    
+
     static let pressureTexts = [
-        "Harus sukses sebelum umur 25...",
-        "Teman-temanku sudah kerja, aku belum...",
-        "Harus posting sesuatu keren tiap hari...",
-        "Kenapa aku belum punya pacar?",
-        "Semua orang lebih pintar dariku...",
-        "Aku harus selalu terlihat bahagia...",
-        "Hidupku tidak semenarik orang lain...",
-        "Aku tertinggal dari teman-teman...",
-        "Harus punya banyak pencapaian...",
-        "Kenapa aku tidak sepopuler mereka?"
+        "Aku cukup dan berharga apa adanya.",
+        "Aku berhak memilih jalanku sendiri.",
+        "Aku percaya pada diriku sendiri.",
+        "Aku tidak harus menyenangkan semua orang.",
+        "Aku kuat, tangguh, dan mampu mengatasi ini.",
+        "Pilihan hidupku valid meski berbeda dari yang lain.",
+        "Aku tumbuh dan belajar setiap hari.",
+        "Aku tidak perlu membandingkan diriku dengan orang lain.",
+        "Aku boleh istirahat tanpa merasa bersalah.",
+        "Aku layak mendapatkan cinta dan rasa hormat.",
+        "Kesalahanku tidak mendefinisikan siapa aku.",
+        "Aku punya hak untuk berkata tidak.",
+        "Aku mendengarkan dan menghargai diriku sendiri.",
+        "Setiap langkah kecil tetap sebuah kemajuan.",
+        "Aku memilih hidup dengan caraku sendiri.",
+        "Aku pantas merayakan pencapaianku sekecil apa pun.",
+        "Aku tidak sendiri dalam perjalanan ini.",
+        "Aku bebas dari tekanan yang tidak membangun.",
+        "Aku menciptakan ruang untuk damai dan bahagia.",
+        "Aku mengizinkan diriku untuk merasa dan sembuh.",
     ]
-    
+
     static let reflectionMessages = [
         "You are exactly where you need to be.",
         "Your journey is unique and valuable.",
@@ -33,8 +43,8 @@ struct GameConfiguration {
         "You don't need to prove anything to anyone.",
         "Your worth isn't measured by others' expectations.",
         "Every small step counts.",
-        "You are enough, just as you are."
+        "You are enough, just as you are.",
     ]
-    
+
     static let positiveSymbols = ["🌸", "⭐", "☁️", "🦋", "✨", "🌿"]
 }

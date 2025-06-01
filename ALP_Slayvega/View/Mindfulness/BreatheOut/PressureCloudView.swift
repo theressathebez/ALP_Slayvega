@@ -13,17 +13,18 @@ struct PressureCloudView: View {
     var body: some View {
         Text(pressure.text)
             .font(.system(size: 16, weight: .medium))
-            .foregroundColor(.black.opacity(0.7))
+            .foregroundColor(.orange)
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
             .background(
                 RoundedRectangle(cornerRadius: 20)
                     .fill(
-                        Color.gray.opacity(pressure.isDisappearing ? 0.2 : 0.6)
+                        Color.yellow.opacity(
+                            pressure.isDisappearing ? 0.2 : 0.4)
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.gray.opacity(0.4), lineWidth: 1)
+                            .stroke(Color.white.opacity(0.4), lineWidth: 1)
                     )
             )
             .opacity(pressure.opacity)

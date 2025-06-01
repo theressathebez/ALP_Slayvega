@@ -12,18 +12,7 @@ import SwiftUI
 class GameViewModel: ObservableObject {
     @Published var gameState = GameState()
 
-    @Published var currentBreathingPhase: BreathingPhase = .pause
-    @Published var phaseProgress: Double = 0.0
-    @Published var cycleCount: Int = 0
-    @Published var isBreathingSessionActive = false
-    @Published var breathingModeEnabled = false
-
-    private var breathingTimer: Timer?
-    private var phaseTimer: Timer?
-    private var gameTimer: Timer?
-    private var pressureTimer: Timer?
-    private var cancellables = Set<AnyCancellable>()
-    
+    // Breathing session properties
     @Published var currentPhase: Breathing = .inhale
     @Published var timeRemaining: Int = 4
     @Published var currentSet: Int = 1
@@ -36,8 +25,20 @@ class GameViewModel: ObservableObject {
     @Published var showAffirmation: Bool = false
     @Published var cloudOpacity: Double = 0.8
 
-
     private var timer: Timer?
+    private var breathingTimer: Timer?
+    private var gameTimer: Timer?
+    private var pressureTimer: Timer?
+
+    private let pressureTexts = [
+        "Cepat sukses", "Harus selalu produktif", "Temanmu sudah lebih dulu",
+        "Waktu terus berjalan", "Semua orang menunggu", "Jangan tertinggal",
+        "Harus sempurna", "Tidak boleh gagal",
+    ]
+
+    init() {
+        setupPressureMessages()
+    }
 
     // MARK: - Game Control Methods
 
@@ -49,18 +50,11 @@ class GameViewModel: ObservableObject {
         startPressureTimer()
         updateBackgroundToCalm()
         addInitialPressure()
-
-        // Start with 4-7-8 breathing by default
-        cycleCount = 0
-        startBreathingSession()
     }
 
     func resetGame() {
         resetTimers()
         gameState = GameState()
-        currentBreathingPhase = .pause
-        phaseProgress = 0.0
-        cycleCount = 0
         startGame()
     }
 
@@ -70,130 +64,45 @@ class GameViewModel: ObservableObject {
         gameState.showReflection = true
         gameState.backgroundColors = getFinalColors()
     }
-    
-    // MARK: - 4-7-8 Breathing Methods
 
-    func toggleBreathingMode() {
-        breathingModeEnabled.toggle()
+    // MARK: - Breathing Control Methods
 
-        if breathingModeEnabled {
-            startBreathingSession()
-        } else {
-            stopBreathingSession()
-        }
+    func startBreathing() {
+        guard !isActive else { return }
+
+        isActive = true
+        isCompleted = false
+        currentSet = 1
+        currentPhase = .inhale
+        timeRemaining = Int(currentPhase.duration)
+        breathingProgress = 0.0
+        showAffirmation = false
+        cloudOpacity = 0.8
+
+        startTimer()
+        startBreathingAnimation()
     }
 
-    func startBreathingSession() {
-        isBreathingSessionActive = true
-        currentBreathingPhase = .inhale
-        phaseProgress = 0.0
-        cycleCount = 0
-        startBreathingCycle()
-    }
-
-    func stopBreathingSession() {
-        isBreathingSessionActive = false
+    func pauseBreathing() {
+        isActive = false
+        timer?.invalidate()
         breathingTimer?.invalidate()
-        phaseTimer?.invalidate()
-        currentBreathingPhase = .pause
-        phaseProgress = 0.0
-        gameState.isBreathing = false
-        gameState.breathingRadius = GameConfiguration.breathingRadiusNormal
     }
 
-    private func startBreathingCycle() {
-        guard isBreathingSessionActive else { return }
+    func resetBreathing() {
+        isActive = false
+        isCompleted = false
+        currentSet = 1
+        currentPhase = .inhale
+        timeRemaining = Int(currentPhase.duration)
+        breathingProgress = 0.0
+        showAffirmation = false
+        cloudOpacity = 0.8
 
-        startPhase(currentBreathingPhase)
-    }
+        timer?.invalidate()
+        breathingTimer?.invalidate()
 
-    private func startPhase(_ phase: BreathingPhase) {
-        currentBreathingPhase = phase
-        phaseProgress = 0.0
-
-        // Update visual state based on phase
-        updateVisualStateForPhase(phase)
-
-        // Start phase timer
-        let phaseDuration = phase.duration
-        let updateInterval = 0.1
-        let totalSteps = phaseDuration / updateInterval
-        var currentStep = 0.0
-
-        phaseTimer?.invalidate()
-        phaseTimer = Timer.scheduledTimer(
-            withTimeInterval: updateInterval, repeats: true
-        ) { [weak self] timer in
-            guard let self = self else { return }
-
-            currentStep += 1
-            self.phaseProgress = currentStep / totalSteps
-
-            if self.phaseProgress >= 1.0 {
-                timer.invalidate()
-                self.moveToNextPhase()
-            }
-        }
-    }
-
-    private func updateVisualStateForPhase(_ phase: BreathingPhase) {
-        switch phase {
-        case .inhale:
-            gameState.isBreathing = true
-            gameState.breathingRadius =
-                GameConfiguration.breathingRadiusExpanded
-            removePressureOnBreathing()
-
-        case .hold:
-            gameState.isBreathing = true
-            gameState.breathingRadius =
-                GameConfiguration.breathingRadiusExpanded
-
-        case .exhale:
-            gameState.isBreathing = false
-            gameState.breathingRadius = GameConfiguration.breathingRadiusNormal
-
-        case .pause:
-            gameState.isBreathing = false
-            gameState.breathingRadius = GameConfiguration.breathingRadiusNormal
-        }
-    }
-
-    private func moveToNextPhase() {
-        guard isBreathingSessionActive else { return }
-
-        switch currentBreathingPhase {
-        case .inhale:
-            startPhase(.hold)
-        case .hold:
-            startPhase(.exhale)
-        case .exhale:
-            cycleCount += 1
-            startPhase(.pause)
-        case .pause:
-            // Check if we should continue or complete the session
-            if cycleCount < 4 {  // Complete 4 cycles
-                startPhase(.inhale)
-            } else {
-                completeBreathingSession()
-            }
-        }
-    }
-
-    private func completeBreathingSession() {
-        stopBreathingSession()
-        // Add positive elements for completing the session
-        addPositiveElement()
-        addPositiveElement()
-    }
-
-    // MARK: - Legacy Breathing Actions (for compatibility)
-
-    func stopBreathing() {
-        if !breathingModeEnabled {
-            gameState.isBreathing = false
-            gameState.breathingRadius = GameConfiguration.breathingRadiusNormal
-        }
+        setupPressureMessages()
     }
 
     // MARK: - Reflection Actions
@@ -223,12 +132,42 @@ class GameViewModel: ObservableObject {
     private func resetTimers() {
         gameTimer?.invalidate()
         pressureTimer?.invalidate()
+        timer?.invalidate()
         breathingTimer?.invalidate()
-        phaseTimer?.invalidate()
         gameTimer = nil
         pressureTimer = nil
+        timer = nil
         breathingTimer = nil
-        phaseTimer = nil
+    }
+
+    private func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) {
+            _ in
+            DispatchQueue.main.async {
+                if self.timeRemaining > 0 {
+                    self.timeRemaining -= 1
+                } else {
+                    self.nextPhase()
+                }
+            }
+        }
+    }
+
+    private func startBreathingAnimation() {
+        breathingTimer = Timer.scheduledTimer(
+            withTimeInterval: 0.1, repeats: true
+        ) { _ in
+            DispatchQueue.main.async {
+                let totalDuration = self.currentPhase.duration
+                let elapsed = totalDuration - Double(self.timeRemaining)
+                self.breathingProgress = elapsed / totalDuration
+
+                // Update cloud opacity based on current set
+                let setProgress =
+                    Double(self.currentSet - 1) / Double(self.totalSets - 1)
+                self.cloudOpacity = 0.8 - (setProgress * 0.6)
+            }
+        }
     }
 
     // MARK: - Game Progress Logic
@@ -236,12 +175,8 @@ class GameViewModel: ObservableObject {
     private func updateGameProgress() {
         guard let startTime = gameState.gameStartTime else { return }
         let elapsed = Date().timeIntervalSince(startTime)
-
-        // Enhanced progress calculation including breathing cycles
         let baseProgress = elapsed / GameConfiguration.gameDuration
-        let breathingBonus = Double(cycleCount) * 0.1  // 10% bonus per completed cycle
-
-        gameState.progress = min(baseProgress + breathingBonus, 1.0)
+        gameState.progress = min(baseProgress, 1.0)
 
         updateBackgroundColorsBasedOnProgress()
 
@@ -250,7 +185,53 @@ class GameViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Breathing Phases
+
+    private func nextPhase() {
+        switch currentPhase {
+        case .inhale:
+            currentPhase = .hold
+        case .hold:
+            currentPhase = .exhale
+        case .exhale:
+            // Complete one set
+            if currentSet < totalSets {
+                currentSet += 1
+                currentPhase = .inhale
+            } else {
+                // All sets completed
+                completeBreathing()
+                return
+            }
+        @unknown default:
+            break
+        }
+
+        timeRemaining = Int(currentPhase.duration)
+        breathingProgress = 0.0
+    }
+
+    private func completeBreathing() {
+        isActive = false
+        isCompleted = true
+        timer?.invalidate()
+        breathingTimer?.invalidate()
+    }
+
     // MARK: - Pressure Management
+
+    private func setupPressureMessages() {
+        pressureMessages = pressureTexts.enumerated().map { index, text in
+            PressureMessage(
+                text: text,
+                offset: CGSize(
+                    width: CGFloat.random(in: -100...100),
+                    height: CGFloat.random(in: -150...150)
+                ),
+                opacity: Double.random(in: 0.3...0.7)
+            )
+        }
+    }
 
     private func addInitialPressure() {
         addRandomPressure()
@@ -275,24 +256,6 @@ class GameViewModel: ObservableObject {
 
     private func cleanupOldPressures() {
         gameState.activePressures.removeAll { $0.shouldRemove }
-    }
-
-    private func removePressureOnBreathing() {
-        guard !gameState.activePressures.isEmpty else { return }
-
-        // Remove multiple pressures during breathing session
-        let removalCount =
-            breathingModeEnabled ? min(2, gameState.activePressures.count) : 1
-
-        for _ in 0..<removalCount {
-            if !gameState.activePressures.isEmpty {
-                let randomIndex = Int.random(
-                    in: 0..<gameState.activePressures.count)
-                gameState.activePressures[randomIndex].startDisappearing()
-            }
-        }
-
-        addPositiveElement()
     }
 
     // MARK: - Positive Elements Management
@@ -382,137 +345,6 @@ class GameViewModel: ObservableObject {
             ]
         }
     }
-    
-    
-
-    private let pressureTexts = [
-        "Cepat sukses", "Harus selalu produktif", "Temanmu sudah lebih dulu",
-        "Waktu terus berjalan", "Semua orang menunggu", "Jangan tertinggal",
-        "Harus sempurna", "Tidak boleh gagal",
-    ]
-
-    init() {
-        setupPressureMessages()
-    }
-
-    private func setupPressureMessages() {
-        pressureMessages = pressureTexts.enumerated().map { index, text in
-            PressureMessage(
-                text: text,
-                offset: CGSize(
-                    width: CGFloat.random(in: -100...100),
-                    height: CGFloat.random(in: -150...150)
-                ),
-                opacity: Double.random(in: 0.3...0.7)
-            )
-        }
-    }
-
-    func startBreathing() {
-        guard !isActive else { return }
-
-        isActive = true
-        isCompleted = false
-        currentSet = 1
-        currentPhase = .inhale
-        timeRemaining = Int(currentPhase.duration)
-        breathingProgress = 0.0
-        showAffirmation = false
-        cloudOpacity = 0.8
-
-        startTimer()
-        startBreathingAnimation()
-    }
-
-    func pauseBreathing() {
-        isActive = false
-        timer?.invalidate()
-        breathingTimer?.invalidate()
-    }
-
-    func resetBreathing() {
-        isActive = false
-        isCompleted = false
-        currentSet = 1
-        currentPhase = .inhale
-        timeRemaining = Int(currentPhase.duration)
-        breathingProgress = 0.0
-        showAffirmation = false
-        cloudOpacity = 0.8
-
-        timer?.invalidate()
-        breathingTimer?.invalidate()
-
-        setupPressureMessages()
-    }
-
-    private func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) {
-            _ in
-            DispatchQueue.main.async {
-                if self.timeRemaining > 0 {
-                    self.timeRemaining -= 1
-                } else {
-                    self.nextPhase()
-                }
-            }
-        }
-    }
-
-    private func startBreathingAnimation() {
-        breathingTimer = Timer.scheduledTimer(
-            withTimeInterval: 0.1, repeats: true
-        ) { _ in
-            DispatchQueue.main.async {
-                let totalDuration = self.currentPhase.duration
-                let elapsed = totalDuration - Double(self.timeRemaining)
-                self.breathingProgress = elapsed / totalDuration
-
-                // Update cloud opacity based on current set
-                let setProgress =
-                    Double(self.currentSet - 1) / Double(self.totalSets - 1)
-                self.cloudOpacity = 0.8 - (setProgress * 0.6)
-            }
-        }
-    }
-
-    private func nextPhase() {
-        switch currentPhase {
-        case .inhale:
-            currentPhase = .hold
-        case .hold:
-            currentPhase = .exhale
-        case .exhale:
-            // Complete one set
-            if currentSet < totalSets {
-                currentSet += 1
-                currentPhase = .inhale
-            } else {
-                // All sets completed
-                completeBreathing()
-                return
-            }
-        @unknown default:
-            break
-        }
-
-        timeRemaining = Int(currentPhase.duration)
-        breathingProgress = 0.0
-    }
-
-    private func completeBreathing() {
-        isActive = false
-        isCompleted = true
-        timer?.invalidate()
-        breathingTimer?.invalidate()
-
-        // Show affirmation
-        affirmationText =
-            Affirmation.messages.randomElement() ?? "You did great!"
-        showAffirmation = true
-        cloudOpacity = 0.0
-    }
-    
 
     // MARK: - Data Helpers
 
