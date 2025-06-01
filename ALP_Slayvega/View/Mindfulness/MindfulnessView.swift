@@ -39,10 +39,12 @@ struct MindfulnessView: View {
     @ViewBuilder
     private func destinationView(for mind: MindfulnessModel) -> some View {
         switch mind.title {
-        case "Calibrate":
-            CheckStressLevelView()  // ganti dengan view yang sesuai jika perlu
-        case "Inhale":
-            RelaxationView()  // ganti dengan view yang sesuai jika perlu
+        case "How Stressed Are You?":
+            CheckStressLevelView()
+        case "Breathe Out":
+            BreatheOutView()
+        case "Social Chameleon":
+            SocialChameleonView()
         default:
             EmptyView()
         }

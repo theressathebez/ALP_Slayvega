@@ -18,17 +18,17 @@ class MindfulnessViewModel: ObservableObject {
     @Published var items: [MindfulnessModel] = [
         MindfulnessModel(
             iconName: "scope",
-            title: "Calibrate",
+            title: "How Stressed Are You?",
             description: "Prepare yourself and get into position."
         ),
         MindfulnessModel(
             iconName: "wind",
-            title: "Inhale",
+            title: "Breathe Out",
             description: "Breathe in slowly and deeply."
         ),
         MindfulnessModel(
             iconName: "lungs.fill",
-            title: "Exhale",
+            title: "Social Chameleon",
             description: "Breathe out gently and relax."
         ),
     ]
