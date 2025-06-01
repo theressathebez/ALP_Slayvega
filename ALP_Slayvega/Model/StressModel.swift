@@ -11,4 +11,5 @@ struct StressModel{
     var StressId:String = ""
     var StressLevel:Int = 0
     var userId:String = ""
+    var timestamp: Int? = nil 
 }

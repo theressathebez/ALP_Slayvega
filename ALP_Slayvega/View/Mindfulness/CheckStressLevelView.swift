@@ -63,6 +63,7 @@ struct CheckStressLevelView: View {
         .navigationTitle("Calibrate")
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(.systemBackground))
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 
