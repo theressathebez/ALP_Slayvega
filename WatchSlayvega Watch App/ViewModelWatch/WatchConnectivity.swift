@@ -1,14 +1,6 @@
-//
-//  WatchConnectivity.swift
-//  WatchSlayvega Watch App
-//
-//  Created by student on 03/06/25.
-//
-
 import WatchConnectivity
 import Foundation
 
-// MARK: - Watch Data Models
 struct WatchCommunityModel: Identifiable, Hashable {
     let id: String
     let username: String
@@ -19,24 +11,16 @@ struct WatchCommunityModel: Identifiable, Hashable {
     let userId: String
 }
 
-struct WatchCommentModel: Identifiable, Hashable {
-    let id: String
-    let username: String
-    let commentContent: String
-    let commentLikeCount: Int
-    let formattedDate: String
-    let userId: String
-    let communityId: String
-}
-
 class WatchConnectivity: NSObject, WCSessionDelegate, ObservableObject {
     var session: WCSession
+    private var retryTimer: Timer?
+    private let maxRetryAttempts = 3
     
     @Published var communities: [WatchCommunityModel] = []
-    @Published var comments: [WatchCommentModel] = []
     @Published var isConnected: Bool = false
     @Published var isLoading: Bool = false
-    @Published var selectedCommunityId: String = ""
+    @Published var lastSyncDate: Date?
+    @Published var errorMessage: String?
     
     override init() {
         session = WCSession.default
@@ -51,34 +35,33 @@ class WatchConnectivity: NSObject, WCSessionDelegate, ObservableObject {
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         DispatchQueue.main.async {
             self.isConnected = activationState == .activated
+            if activationState == .activated {
+                self.requestCommunities()
+            }
         }
         
-        print("Watch WC Session activation completed with state: \(activationState)")
         if let error = error {
             print("Watch WC Session activation error: \(error.localizedDescription)")
-        }
-        
-        // Request initial data when activated
-        if activationState == .activated {
-            requestCommunities()
+            DispatchQueue.main.async {
+                self.errorMessage = "Connection error: \(error.localizedDescription)"
+            }
         }
     }
     
-    // MARK: - Receive Messages from iPhone
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         DispatchQueue.main.async {
+            self.isLoading = false
+            self.errorMessage = nil
+            
             if let communitiesData = message["communities"] as? [[String: Any]] {
                 self.parseCommunities(from: communitiesData)
-            }
-            
-            if let commentsData = message["comments"] as? [[String: Any]],
-               let communityId = message["communityId"] as? String {
-                self.parseComments(from: commentsData, for: communityId)
+                self.lastSyncDate = Date()
+            } else if let error = message["error"] as? String {
+                self.errorMessage = error
             }
         }
     }
     
-    // MARK: - Parse Community Data
     private func parseCommunities(from data: [[String: Any]]) {
         var parsedCommunities: [WatchCommunityModel] = []
         
@@ -95,87 +78,80 @@ class WatchConnectivity: NSObject, WCSessionDelegate, ObservableObject {
             parsedCommunities.append(community)
         }
         
-        self.communities = parsedCommunities
-        self.isLoading = false
-        print("Received \(parsedCommunities.count) communities on watch")
-    }
-    
-    // MARK: - Parse Comments Data
-    private func parseComments(from data: [[String: Any]], for communityId: String) {
-        guard communityId == selectedCommunityId else { return }
-        
-        var parsedComments: [WatchCommentModel] = []
-        
-        for commentData in data {
-            let comment = WatchCommentModel(
-                id: commentData["CommentId"] as? String ?? UUID().uuidString,
-                username: commentData["Username"] as? String ?? "Anonymous",
-                commentContent: commentData["CommentContent"] as? String ?? "",
-                commentLikeCount: commentData["CommentLikeCount"] as? Int ?? 0,
-                formattedDate: commentData["formattedDate"] as? String ?? "",
-                userId: commentData["userId"] as? String ?? "",
-                communityId: commentData["CommunityId"] as? String ?? ""
-            )
-            parsedComments.append(comment)
+        parsedCommunities.sort { community1, community2 in
+            if community1.communityLikeCount == community2.communityLikeCount {
+                return community1.username < community2.username
+            }
+            return community1.communityLikeCount > community2.communityLikeCount
         }
         
-        self.comments = parsedComments
-        self.isLoading = false
-        print("Received \(parsedComments.count) comments for community \(communityId)")
+        self.communities = parsedCommunities
     }
     
-    // MARK: - Request Data from iPhone
-    func requestCommunities() {
-        guard session.isReachable else {
-            print("iPhone is not reachable")
+    func requestCommunities(retryCount: Int = 0) {
+        guard session.activationState == .activated else {
+            session.activate()
             return
         }
         
-        isLoading = true
+        guard session.isReachable else {
+            if retryCount < maxRetryAttempts {
+                retryTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
+                    self?.requestCommunities(retryCount: retryCount + 1)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    self.errorMessage = "iPhone unavailable"
+                }
+            }
+            return
+        }
+        
+        DispatchQueue.main.async {
+            self.isLoading = true
+            self.errorMessage = nil
+        }
+        
         let message = ["action": "requestCommunities"]
         
         session.sendMessage(message, replyHandler: { reply in
-            print("Communities request sent successfully: \(reply)")
+            // Reply handled in didReceiveMessage
         }, errorHandler: { error in
             DispatchQueue.main.async {
                 self.isLoading = false
+                self.errorMessage = "Sync failed: \(error.localizedDescription)"
             }
-            print("Error requesting communities: \(error.localizedDescription)")
+            
+            if retryCount < self.maxRetryAttempts {
+                self.retryTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
+                    self?.requestCommunities(retryCount: retryCount + 1)
+                }
+            }
         })
     }
     
-    func requestComments(for communityId: String) {
-        guard session.isReachable else {
-            print("iPhone is not reachable")
-            return
-        }
-        
-        selectedCommunityId = communityId
-        isLoading = true
-        comments.removeAll() // Clear previous comments
-        
-        let message = [
-            "action": "requestComments",
-            "communityId": communityId
-        ]
-        
-        session.sendMessage(message, replyHandler: { reply in
-            print("Comments request sent successfully: \(reply)")
-        }, errorHandler: { error in
-            DispatchQueue.main.async {
-                self.isLoading = false
-            }
-            print("Error requesting comments: \(error.localizedDescription)")
-        })
-    }
-    
-    // MARK: - Refresh Data
     func refreshCommunities() {
+        retryTimer?.invalidate()
         requestCommunities()
     }
     
-    func refreshComments() {
-        guard !selectedCommunityId.isEmpty else { return }
-        requestComments(for: selectedCommunityId)
+    // MARK: - Utility Methods
+    func getTopCommunities(limit: Int = 10) -> [WatchCommunityModel] {
+        return Array(communities.prefix(limit))
+    }
+    
+    func searchCommunities(by keyword: String) -> [WatchCommunityModel] {
+        if keyword.isEmpty { return communities }
+        
+        return communities.filter { community in
+            community.communityContent.localizedCaseInsensitiveContains(keyword) ||
+            community.hashtags.localizedCaseInsensitiveContains(keyword) ||
+            community.username.localizedCaseInsensitiveContains(keyword)
+        }
+    }
+    
+    func getCommunityById(_ id: String) -> WatchCommunityModel? {
+        return communities.first { $0.id == id }
     }
 }

@@ -1,78 +1,137 @@
-//
-//  WatchCommunityView.swift
-//  WatchSlayvega Watch App
-//
-//  Created by student on 03/06/25.
-//
-
 import SwiftUI
 
-struct WatchCommunityView: View {
+struct WatchCommunityReadView: View {
     @StateObject private var connectivity = WatchConnectivity()
-    @State private var selectedCommunity: WatchCommunityModel?
+    @State private var searchText = ""
     
     var body: some View {
         NavigationView {
             VStack {
                 if connectivity.isLoading {
-                    VStack(spacing: 10) {
-                        ProgressView()
-                            .scaleEffect(0.8)
-                        Text("Loading...")
-                            .font(.caption)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    LoadingView()
+                } else if let error = connectivity.errorMessage {
+                    ErrorView(error: error, connectivity: connectivity)
                 } else if connectivity.communities.isEmpty {
-                    VStack(spacing: 10) {
-                        Image(systemName: "wifi.slash")
-                            .font(.title2)
-                            .foregroundColor(.gray)
-                        
-                        Text("No Connection")
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                        
-                        Button("Refresh") {
-                            connectivity.requestCommunities()
-                        }
-                        .font(.caption)
-                        .foregroundColor(.blue)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    EmptyStateView(connectivity: connectivity)
                 } else {
-                    List {
-                        ForEach(connectivity.communities) { community in
-                            NavigationLink(
-                                destination: WatchCommunityDetailView(
-                                    community: community,
-                                    connectivity: connectivity
-                                )
-                            ) {
-                                WatchCommunityRowView(community: community)
-                            }
-                        }
-                    }
-                    .refreshable {
-                        connectivity.refreshCommunities()
-                    }
+                    CommunityListView(connectivity: connectivity, searchText: searchText)
                 }
             }
             .navigationTitle("Community")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                if connectivity.communities.isEmpty {
-                    connectivity.requestCommunities()
-                }
+                connectivity.requestCommunities()
+            }
+            .refreshable {
+                connectivity.refreshCommunities()
             }
         }
     }
 }
 
-struct WatchCommunityRowView: View {
+struct LoadingView: View {
+    var body: some View {
+        VStack(spacing: 8) {
+            ProgressView()
+                .scaleEffect(0.8)
+            Text("Loading posts...")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+struct ErrorView: View {
+    let error: String
+    let connectivity: WatchConnectivity
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.title2)
+                .foregroundColor(.red)
+            
+            Text("Error")
+                .font(.caption)
+                .fontWeight(.medium)
+            
+            Text(error)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+            
+            Button("Retry") {
+                connectivity.refreshCommunities()
+            }
+            .font(.caption)
+            .foregroundColor(.blue)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+struct EmptyStateView: View {
+    let connectivity: WatchConnectivity
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "bubble.left.and.bubble.right")
+                .font(.title2)
+                .foregroundColor(.gray)
+            
+            Text("No Posts Yet")
+                .font(.caption)
+                .fontWeight(.medium)
+            
+            Text("Check back later for community updates")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+            
+            Button("Refresh") {
+                connectivity.requestCommunities()
+            }
+            .font(.caption)
+            .foregroundColor(.blue)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+struct CommunityListView: View {
+    @ObservedObject var connectivity: WatchConnectivity
+    var searchText: String
+    
+    var filteredCommunities: [WatchCommunityModel] {
+        if searchText.isEmpty {
+            return connectivity.communities
+        }
+        return connectivity.searchCommunities(by: searchText)
+    }
+    
+    var body: some View {
+        List {
+            ForEach(filteredCommunities) { community in
+                NavigationLink(
+                    destination: CommunityDetailReadView(community: community)
+                ) {
+                    CommunityRowView(community: community)
+                }
+                .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+            }
+        }
+        .listStyle(PlainListStyle())
+    }
+}
+
+struct CommunityRowView: View {
     let community: WatchCommunityModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text(community.username)
                     .font(.caption)
@@ -88,133 +147,45 @@ struct WatchCommunityRowView: View {
             
             Text(community.communityContent)
                 .font(.caption)
-                .lineLimit(3)
+                .lineLimit(2)
                 .multilineTextAlignment(.leading)
             
             if !community.hashtags.isEmpty {
                 Text(community.hashtags)
                     .font(.caption2)
-                    .fontWeight(.bold)
+                    .fontWeight(.medium)
                     .foregroundColor(.blue)
                     .lineLimit(1)
             }
             
-            HStack {
-                Image(systemName: "heart")
-                    .font(.caption2)
-                    .foregroundColor(.red)
-                
-                Text("\(community.communityLikeCount)")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+            HStack(spacing: 12) {
+                HStack(spacing: 2) {
+                    Image(systemName: "heart.fill")
+                        .font(.caption2)
+                        .foregroundColor(.red)
+                    
+                    Text("\(community.communityLikeCount)")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
                 
                 Spacer()
-                
-                Image(systemName: "bubble.right")
-                    .font(.caption2)
-                    .foregroundColor(.gray)
             }
         }
         .padding(.vertical, 2)
     }
 }
 
-struct WatchCommunityDetailView: View {
+struct CommunityDetailReadView: View {
     let community: WatchCommunityModel
-    @ObservedObject var connectivity: WatchConnectivity
-    @State private var showComments = false
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 8) {
-                // Header
-                HStack {
-                    Text(community.username)
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.orange)
-                    
-                    Spacer()
-                    
-                    Text(community.formattedDate)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                }
-                
-                // Content
-                Text(community.communityContent)
-                    .font(.caption)
-                    .multilineTextAlignment(.leading)
-                
-                // Hashtags
-                if !community.hashtags.isEmpty {
-                    Text(community.hashtags)
-                        .font(.caption2)
-                        .fontWeight(.bold)
-                        .foregroundColor(.blue)
-                }
-                
-                // Stats
-                HStack {
-                    HStack(spacing: 4) {
-                        Image(systemName: "heart.fill")
-                            .font(.caption2)
-                            .foregroundColor(.red)
-                        
-                        Text("\(community.communityLikeCount)")
-                            .font(.caption2)
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        showComments.toggle()
-                        if showComments {
-                            connectivity.requestComments(for: community.id)
-                        }
-                    }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "bubble.right")
-                                .font(.caption2)
-                            
-                            Text("Comments")
-                                .font(.caption2)
-                        }
-                        .foregroundColor(.blue)
-                    }
-                }
-                .padding(.top, 4)
-                
-                // Comments Section
-                if showComments {
-                    Divider()
-                        .padding(.top, 8)
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Comments")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                        
-                        if connectivity.isLoading {
-                            HStack {
-                                ProgressView()
-                                    .scaleEffect(0.6)
-                                Text("Loading comments...")
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
-                            }
-                        } else if connectivity.comments.isEmpty {
-                            Text("No comments yet")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                                .italic()
-                        } else {
-                            ForEach(connectivity.comments) { comment in
-                                WatchCommentRowView(comment: comment)
-                            }
-                        }
-                    }
-                }
+            VStack(alignment: .leading, spacing: 12) {
+                PostHeaderView(community: community)
+                PostContentView(community: community)
+                PostStatsView(community: community)
+                Spacer()
             }
             .padding()
         }
@@ -223,48 +194,75 @@ struct WatchCommunityDetailView: View {
     }
 }
 
-struct WatchCommentRowView: View {
-    let comment: WatchCommentModel
+struct PostHeaderView: View {
+    let community: WatchCommunityModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text(comment.username)
-                    .font(.caption2)
+                Text(community.username)
+                    .font(.caption)
                     .fontWeight(.semibold)
                     .foregroundColor(.orange)
                 
                 Spacer()
+            }
+            
+            Text(community.formattedDate)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+        .padding(.bottom, 4)
+    }
+}
+
+struct PostContentView: View {
+    let community: WatchCommunityModel
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(community.communityContent)
+                .font(.caption)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+            
+            if !community.hashtags.isEmpty {
+                Text(community.hashtags)
+                    .font(.caption2)
+                    .fontWeight(.medium)
+                    .foregroundColor(.blue)
+            }
+        }
+    }
+}
+
+struct PostStatsView: View {
+    let community: WatchCommunityModel
+    
+    var body: some View {
+        HStack {
+            HStack(spacing: 4) {
+                Image(systemName: "heart.fill")
+                    .font(.caption)
+                    .foregroundColor(.red)
                 
-                Text(comment.formattedDate)
+                Text("\(community.communityLikeCount) likes")
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }
             
-            Text(comment.commentContent)
-                .font(.caption2)
-                .multilineTextAlignment(.leading)
+            Spacer()
             
-            HStack {
-                Spacer()
-                
-                HStack(spacing: 2) {
-                    Image(systemName: "heart")
-                        .font(.caption2)
-                        .foregroundColor(.red)
-                    
-                    Text("\(comment.commentLikeCount)")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                }
-            }
+            Text("Read Only")
+                .font(.caption2)
+                .foregroundColor(.gray)
+                .italic()
         }
-        .padding(8)
-        .background(Color(.gray))
-        .cornerRadius(8)
+        .padding(.top, 8)
+        .padding(.bottom, 4)
     }
 }
 
 #Preview {
-    WatchCommunityView()
+    WatchCommunityReadView()
 }
