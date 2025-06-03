@@ -1,18 +1,18 @@
 //
-//  StressQuestionView.swift
+//  SocialChameleonView.swift
 //  ALP_Slayvega
 //
-//  Created by student on 22/05/25.
+//  Created by Michelle Wijaya on 01/06/25.
 //
 
 import SwiftUI
 
-struct StressQuestionView: View {
+struct SocialChameleonView: View {
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
 
 #Preview {
-    StressQuestionView()
+    SocialChameleonView()
 }

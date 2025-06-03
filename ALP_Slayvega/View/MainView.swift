@@ -38,7 +38,14 @@ struct MainTabView: View {
                     Label("Journal", systemImage: "book.closed.fill")
                 }
         }
-        .accentColor(Color.fromHex("#FF8F6D")) // Warna utama tab yang dipilih
+        .accentColor(Color.fromHex("#FF8F6D"))
+        .onAppear {
+            showAuthSheet = !authViewModel.isSignedIn
+        }
+
+        .sheet(isPresented: $showAuthSheet) {
+            LoginRegisterSheet(showAuthSheet: $showAuthSheet)
+        }
     }
 }
 
