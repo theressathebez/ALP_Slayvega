@@ -15,6 +15,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		3F3531C42DEEB72800ED7027 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FBD54882DDEBD2900332EA1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3F3531B52DEEB72700ED7027;
+			remoteInfo = Mac_ALP_Slayvega;
+		};
+		3F3531CE2DEEB72800ED7027 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FBD54882DDEBD2900332EA1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3F3531B52DEEB72700ED7027;
+			remoteInfo = Mac_ALP_Slayvega;
+		};
 		3FBD549E2DDEBD2B00332EA1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3FBD54882DDEBD2900332EA1 /* Project object */;
@@ -32,12 +46,30 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3F3531B62DEEB72700ED7027 /* Mac_ALP_Slayvega.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mac_ALP_Slayvega.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F3531C32DEEB72800ED7027 /* Mac_ALP_SlayvegaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Mac_ALP_SlayvegaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F3531CD2DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Mac_ALP_SlayvegaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FBD54902DDEBD2900332EA1 /* ALP_Slayvega.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALP_Slayvega.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FBD549D2DDEBD2B00332EA1 /* ALP_SlayvegaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ALP_SlayvegaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FBD54A72DDEBD2B00332EA1 /* ALP_SlayvegaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ALP_SlayvegaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		3F3531B72DEEB72700ED7027 /* Mac_ALP_Slayvega */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Mac_ALP_Slayvega;
+			sourceTree = "<group>";
+		};
+		3F3531C62DEEB72800ED7027 /* Mac_ALP_SlayvegaTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Mac_ALP_SlayvegaTests;
+			sourceTree = "<group>";
+		};
+		3F3531D02DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Mac_ALP_SlayvegaUITests;
+			sourceTree = "<group>";
+		};
 		3FBD54922DDEBD2900332EA1 /* ALP_Slayvega */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ALP_Slayvega;
@@ -56,6 +88,27 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3F3531B32DEEB72700ED7027 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3F3531C02DEEB72800ED7027 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3F3531CA2DEEB72800ED7027 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3FBD548D2DDEBD2900332EA1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -91,6 +144,9 @@
 				3FBD54922DDEBD2900332EA1 /* ALP_Slayvega */,
 				3FBD54A02DDEBD2B00332EA1 /* ALP_SlayvegaTests */,
 				3FBD54AA2DDEBD2B00332EA1 /* ALP_SlayvegaUITests */,
+				3F3531B72DEEB72700ED7027 /* Mac_ALP_Slayvega */,
+				3F3531C62DEEB72800ED7027 /* Mac_ALP_SlayvegaTests */,
+				3F3531D02DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests */,
 				3FBD54912DDEBD2900332EA1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -101,6 +157,9 @@
 				3FBD54902DDEBD2900332EA1 /* ALP_Slayvega.app */,
 				3FBD549D2DDEBD2B00332EA1 /* ALP_SlayvegaTests.xctest */,
 				3FBD54A72DDEBD2B00332EA1 /* ALP_SlayvegaUITests.xctest */,
+				3F3531B62DEEB72700ED7027 /* Mac_ALP_Slayvega.app */,
+				3F3531C32DEEB72800ED7027 /* Mac_ALP_SlayvegaTests.xctest */,
+				3F3531CD2DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,6 +167,74 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3F3531B52DEEB72700ED7027 /* Mac_ALP_Slayvega */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3F3531D52DEEB72800ED7027 /* Build configuration list for PBXNativeTarget "Mac_ALP_Slayvega" */;
+			buildPhases = (
+				3F3531B22DEEB72700ED7027 /* Sources */,
+				3F3531B32DEEB72700ED7027 /* Frameworks */,
+				3F3531B42DEEB72700ED7027 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				3F3531B72DEEB72700ED7027 /* Mac_ALP_Slayvega */,
+			);
+			name = Mac_ALP_Slayvega;
+			packageProductDependencies = (
+			);
+			productName = Mac_ALP_Slayvega;
+			productReference = 3F3531B62DEEB72700ED7027 /* Mac_ALP_Slayvega.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3F3531C22DEEB72800ED7027 /* Mac_ALP_SlayvegaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3F3531D82DEEB72800ED7027 /* Build configuration list for PBXNativeTarget "Mac_ALP_SlayvegaTests" */;
+			buildPhases = (
+				3F3531BF2DEEB72800ED7027 /* Sources */,
+				3F3531C02DEEB72800ED7027 /* Frameworks */,
+				3F3531C12DEEB72800ED7027 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3F3531C52DEEB72800ED7027 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3F3531C62DEEB72800ED7027 /* Mac_ALP_SlayvegaTests */,
+			);
+			name = Mac_ALP_SlayvegaTests;
+			packageProductDependencies = (
+			);
+			productName = Mac_ALP_SlayvegaTests;
+			productReference = 3F3531C32DEEB72800ED7027 /* Mac_ALP_SlayvegaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		3F3531CC2DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3F3531DB2DEEB72800ED7027 /* Build configuration list for PBXNativeTarget "Mac_ALP_SlayvegaUITests" */;
+			buildPhases = (
+				3F3531C92DEEB72800ED7027 /* Sources */,
+				3F3531CA2DEEB72800ED7027 /* Frameworks */,
+				3F3531CB2DEEB72800ED7027 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3F3531CF2DEEB72800ED7027 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3F3531D02DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests */,
+			);
+			name = Mac_ALP_SlayvegaUITests;
+			packageProductDependencies = (
+			);
+			productName = Mac_ALP_SlayvegaUITests;
+			productReference = 3F3531CD2DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		3FBD548F2DDEBD2900332EA1 /* ALP_Slayvega */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3FBD54B12DDEBD2B00332EA1 /* Build configuration list for PBXNativeTarget "ALP_Slayvega" */;
@@ -191,6 +318,17 @@
 				LastSwiftUpdateCheck = 1630;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
+					3F3531B52DEEB72700ED7027 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					3F3531C22DEEB72800ED7027 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 3F3531B52DEEB72700ED7027;
+					};
+					3F3531CC2DEEB72800ED7027 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 3F3531B52DEEB72700ED7027;
+					};
 					3FBD548F2DDEBD2900332EA1 = {
 						CreatedOnToolsVersion = 16.3;
 					};
@@ -224,11 +362,35 @@
 				3FBD548F2DDEBD2900332EA1 /* ALP_Slayvega */,
 				3FBD549C2DDEBD2B00332EA1 /* ALP_SlayvegaTests */,
 				3FBD54A62DDEBD2B00332EA1 /* ALP_SlayvegaUITests */,
+				3F3531B52DEEB72700ED7027 /* Mac_ALP_Slayvega */,
+				3F3531C22DEEB72800ED7027 /* Mac_ALP_SlayvegaTests */,
+				3F3531CC2DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3F3531B42DEEB72700ED7027 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3F3531C12DEEB72800ED7027 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3F3531CB2DEEB72800ED7027 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3FBD548E2DDEBD2900332EA1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -253,6 +415,27 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3F3531B22DEEB72700ED7027 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3F3531BF2DEEB72800ED7027 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3F3531C92DEEB72800ED7027 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3FBD548C2DDEBD2900332EA1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -277,6 +460,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		3F3531C52DEEB72800ED7027 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3F3531B52DEEB72700ED7027 /* Mac_ALP_Slayvega */;
+			targetProxy = 3F3531C42DEEB72800ED7027 /* PBXContainerItemProxy */;
+		};
+		3F3531CF2DEEB72800ED7027 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3F3531B52DEEB72700ED7027 /* Mac_ALP_Slayvega */;
+			targetProxy = 3F3531CE2DEEB72800ED7027 /* PBXContainerItemProxy */;
+		};
 		3FBD549F2DDEBD2B00332EA1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3FBD548F2DDEBD2900332EA1 /* ALP_Slayvega */;
@@ -290,6 +483,133 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		3F3531D62DEEB72800ED7027 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Mac_ALP_Slayvega/Mac_ALP_SlayvegaDebug.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7U43528992;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "DP.Mac-ALP-Slayvega";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		3F3531D72DEEB72800ED7027 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Mac_ALP_Slayvega/Mac_ALP_Slayvega.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "DP.Mac-ALP-Slayvega";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		3F3531D92DEEB72800ED7027 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "DP.Mac-ALP-SlayvegaTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mac_ALP_Slayvega.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Mac_ALP_Slayvega";
+			};
+			name = Debug;
+		};
+		3F3531DA2DEEB72800ED7027 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "DP.Mac-ALP-SlayvegaTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mac_ALP_Slayvega.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Mac_ALP_Slayvega";
+			};
+			name = Release;
+		};
+		3F3531DC2DEEB72800ED7027 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "DP.Mac-ALP-SlayvegaUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = Mac_ALP_Slayvega;
+			};
+			name = Debug;
+		};
+		3F3531DD2DEEB72800ED7027 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "DP.Mac-ALP-SlayvegaUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = Mac_ALP_Slayvega;
+			};
+			name = Release;
+		};
 		3FBD54AF2DDEBD2B00332EA1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -538,6 +858,33 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3F3531D52DEEB72800ED7027 /* Build configuration list for PBXNativeTarget "Mac_ALP_Slayvega" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F3531D62DEEB72800ED7027 /* Debug */,
+				3F3531D72DEEB72800ED7027 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3F3531D82DEEB72800ED7027 /* Build configuration list for PBXNativeTarget "Mac_ALP_SlayvegaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F3531D92DEEB72800ED7027 /* Debug */,
+				3F3531DA2DEEB72800ED7027 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3F3531DB2DEEB72800ED7027 /* Build configuration list for PBXNativeTarget "Mac_ALP_SlayvegaUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F3531DC2DEEB72800ED7027 /* Debug */,
+				3F3531DD2DEEB72800ED7027 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3FBD548B2DDEBD2900332EA1 /* Build configuration list for PBXProject "ALP_Slayvega" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

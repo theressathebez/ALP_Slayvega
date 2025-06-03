@@ -25,7 +25,7 @@ struct ALP_SlayvegaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            MainView()
                 .environmentObject(authViewModel)
                 .environmentObject(quotesVM)
                 .environmentObject(communityVM)

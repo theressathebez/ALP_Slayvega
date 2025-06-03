@@ -7,38 +7,33 @@
 
 import SwiftUI
 
-struct MainTabView: View {
+struct MainView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
-    @StateObject var communityVM = CommunityViewModel()
-    @StateObject var journalVM = JournalViewModel()
-    @State var showAuthSheet = false //add sheet state
-    
+    @State var showAuthSheet = false
+
     var body: some View {
         TabView {
-            HomeView()
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Home")
-                }
-
-            MindfulnessView()
-                .tabItem {
-                    Label("Mindfulness", systemImage: "brain.head.profile")
-                }
-
             CommunityView()
                 .tabItem {
                     Image(systemName: "person.3.fill")
                     Text("Shares")
                 }
             
+            MindfulnessView()
+                .tabItem {
+                    Label("Mindfulness", systemImage: "brain.head.profile")
+                }
+            HomeView()
+                .tabItem {
+                    Image(systemName: "house.fill")
+                    Text("Dashboard")
+                }
+
             JournalMainView()
-                .environmentObject(journalVM)
                 .tabItem {
                     Label("Journal", systemImage: "book.closed.fill")
                 }
         }
-        .accentColor(Color.fromHex("#FF8F6D"))
         .onAppear {
             showAuthSheet = !authViewModel.isSignedIn
         }
@@ -48,9 +43,3 @@ struct MainTabView: View {
         }
     }
 }
-
-//#Preview {
-//    MainTabView()
-//        .environmentObject(AuthViewModel())
-//        .environmentObject(CommentViewModel())
-//}

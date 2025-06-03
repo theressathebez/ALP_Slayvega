@@ -40,9 +40,7 @@ struct ProfileCardView: View {
 
                 Spacer()
             }
-            .padding(.trailing, 48) // berikan ruang untuk ikon notifikasi
-
-            // ✅ Notification icon
+            .padding(.trailing, 48)
             ZStack(alignment: .topTrailing) {
                 Image(systemName: "bell.fill")
                     .font(.system(size: 22))
@@ -60,7 +58,6 @@ struct ProfileCardView: View {
                 }
             }
 
-            // ✅ NavigationLink to ProfileView
             NavigationLink(
                 destination: ProfileView(showAuthSheet: $showAuthSheet, authVM: authVM),
                 isActive: $goToProfile,
