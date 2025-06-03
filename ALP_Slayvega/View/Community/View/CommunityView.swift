@@ -213,7 +213,8 @@ struct SharePostsView: View {
                         }
                     },
                     community: community, // Pass the complete community model
-                    authVM: authVM // Pass the AuthViewModel
+                    authVM: authVM, // Pass the AuthViewModel
+                    communityVM: communityVM // Pass the CommunityViewModel for like functionality
                 )
             }
             
@@ -239,7 +240,8 @@ struct SharePostsView: View {
                 currentUserId: authVM.user?.uid,
                 onDelete: {},
                 community: exampleCommunity1,
-                authVM: authVM
+                authVM: authVM,
+                communityVM: communityVM
             )
 
             let exampleCommunity2 = CommunityModel(
@@ -263,7 +265,8 @@ struct SharePostsView: View {
                 currentUserId: authVM.user?.uid,
                 onDelete: {},
                 community: exampleCommunity2,
-                authVM: authVM
+                authVM: authVM,
+                communityVM: communityVM
             )
         }
         .padding()
@@ -280,7 +283,7 @@ struct SharePostsView: View {
     }
 }
 
-// New view for user's own posts
+// Updated MyPostsView to pass CommunityViewModel
 struct MyPostsView: View {
     let communities: [CommunityModel]
     let communityVM: CommunityViewModel
@@ -320,7 +323,8 @@ struct MyPostsView: View {
                             communityVM.removeCommunity(withId: community.id)
                         },
                         community: community, // Pass the complete community model
-                        authVM: authVM // Pass the AuthViewModel
+                        authVM: authVM, // Pass the AuthViewModel
+                        communityVM: communityVM // Pass the CommunityViewModel for like functionality
                     )
                 }
             }
@@ -362,39 +366,6 @@ struct TrendingTagRow: View {
         .overlay(Divider(), alignment: .bottom)
     }
 }
-
-// Hex to Color converter
-//extension Color {
-//    init(hex: String) {
-//        let hex = hex.trimmingCharacters(
-//            in: CharacterSet.alphanumerics.inverted
-//        )
-//        var int: UInt64 = 0
-//        Scanner(string: hex).scanHexInt64(&int)
-//        let a, r, g, b: UInt64
-//        switch hex.count {
-//        case 6:
-//            (a, r, g, b) = (
-//                255, (int >> 16) & 0xff, (int >> 8) & 0xff, int & 0xff
-//            )
-//        case 8:
-//            (a, r, g, b) = (
-//                (int >> 24) & 0xff, (int >> 16) & 0xff, (int >> 8) & 0xff,
-//                int & 0xff
-//            )
-//        default:
-//            (a, r, g, b) = (255, 255, 255, 255)
-//        }
-//
-//        self.init(
-//            .sRGB,
-//            red: Double(r) / 255,
-//            green: Double(g) / 255,
-//            blue: Double(b) / 255,
-//            opacity: Double(a) / 255
-//        )
-//    }
-//}
 
 // Preview
 #Preview {

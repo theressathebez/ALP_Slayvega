@@ -118,15 +118,12 @@ struct CommentDetailView: View {
                             CommentCard(
                                 comment: comment,
                                 currentUserId: authVM.user?.uid,
+                                isLiked: commentVM.isCommentLikedByUser(commentId: comment.CommentId),
                                 onDelete: {
                                     commentVM.deleteComment(commentId: comment.CommentId)
                                 },
-                                onLike: { isLiked in
-                                    commentVM.toggleCommentLike(
-                                        commentId: comment.CommentId,
-                                        currentLikeCount: comment.CommentLikeCount,
-                                        isLiked: isLiked
-                                    )
+                                onLike: {
+                                    commentVM.toggleCommentLike(commentId: comment.CommentId)
                                 }
                             )
                         }
@@ -217,11 +214,12 @@ struct CommentDetailView: View {
 struct CommentCard: View {
     let comment: CommentModel
     let currentUserId: String?
+    let isLiked: Bool
     let onDelete: () -> Void
-    let onLike: (Bool) -> Void
+    let onLike: () -> Void
     
-    @State private var isLiked: Bool = false
     @State private var showDeleteAlert: Bool = false
+    @State private var isAnimating: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -259,15 +257,25 @@ struct CommentCard: View {
                 Spacer()
                 
                 Button(action: {
-                    isLiked.toggle()
-                    onLike(isLiked)
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        isAnimating = true
+                    }
+                    
+                    onLike()
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation(.easeInOut(duration: 0.1)) {
+                            isAnimating = false
+                        }
+                    }
                 }) {
                     HStack(spacing: 4) {
                         Image(systemName: isLiked ? "heart.fill" : "heart")
                             .foregroundColor(isLiked ? .red : .gray)
                             .font(.system(size: 14))
+                            .scaleEffect(isAnimating ? 1.2 : 1.0)
                         
-                        Text("\(comment.CommentLikeCount + (isLiked ? 1 : 0))")
+                        Text("\(comment.CommentLikeCount)")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
