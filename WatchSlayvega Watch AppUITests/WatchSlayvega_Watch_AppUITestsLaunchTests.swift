@@ -1,13 +1,13 @@
 //
-//  Mac_ALP_SlayvegaUITestsLaunchTests.swift
-//  Mac_ALP_SlayvegaUITests
+//  WatchSlayvega_Watch_AppUITestsLaunchTests.swift
+//  WatchSlayvega Watch AppUITests
 //
 //  Created by student on 03/06/25.
 //
 
 import XCTest
 
-final class Mac_ALP_SlayvegaUITestsLaunchTests: XCTestCase {
+final class WatchSlayvega_Watch_AppUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  Mac_ALP_Slayvega
+//  WatchSlayvega Watch App
 //
 //  Created by student on 03/06/25.
 //

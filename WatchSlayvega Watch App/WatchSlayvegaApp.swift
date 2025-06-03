@@ -1,6 +1,6 @@
 //
-//  Mac_ALP_SlayvegaApp.swift
-//  Mac_ALP_Slayvega
+//  WatchSlayvegaApp.swift
+//  WatchSlayvega Watch App
 //
 //  Created by student on 03/06/25.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct Mac_ALP_SlayvegaApp: App {
+struct WatchSlayvega_Watch_AppApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

@@ -12,22 +12,30 @@
 		3F459F822DE5783E00DED8EF /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3F459F812DE5783E00DED8EF /* FirebaseAuth */; };
 		3F459F842DE5783E00DED8EF /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3F459F832DE5783E00DED8EF /* FirebaseCore */; };
 		3F459F862DE5783E00DED8EF /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 3F459F852DE5783E00DED8EF /* FirebaseDatabase */; };
+		3F8222752DEED93900D6822B /* WatchSlayvega Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 3F8222552DEED93800D6822B /* WatchSlayvega Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3F3531C42DEEB72800ED7027 /* PBXContainerItemProxy */ = {
+		3F8222622DEED93900D6822B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3FBD54882DDEBD2900332EA1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 3F3531B52DEEB72700ED7027;
-			remoteInfo = Mac_ALP_Slayvega;
+			remoteGlobalIDString = 3F8222542DEED93800D6822B;
+			remoteInfo = "WatchSlayvega Watch App";
 		};
-		3F3531CE2DEEB72800ED7027 /* PBXContainerItemProxy */ = {
+		3F82226C2DEED93900D6822B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3FBD54882DDEBD2900332EA1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 3F3531B52DEEB72700ED7027;
-			remoteInfo = Mac_ALP_Slayvega;
+			remoteGlobalIDString = 3F8222542DEED93800D6822B;
+			remoteInfo = "WatchSlayvega Watch App";
+		};
+		3F8222732DEED93900D6822B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FBD54882DDEBD2900332EA1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3F8222542DEED93800D6822B;
+			remoteInfo = "WatchSlayvega Watch App";
 		};
 		3FBD549E2DDEBD2B00332EA1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -45,33 +53,60 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		3F8222792DEED93900D6822B /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				3F8222752DEED93900D6822B /* WatchSlayvega Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		3F3531B62DEEB72700ED7027 /* Mac_ALP_Slayvega.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mac_ALP_Slayvega.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3F3531C32DEEB72800ED7027 /* Mac_ALP_SlayvegaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Mac_ALP_SlayvegaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3F3531CD2DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Mac_ALP_SlayvegaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F8222552DEED93800D6822B /* WatchSlayvega Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WatchSlayvega Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F8222612DEED93900D6822B /* WatchSlayvega Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "WatchSlayvega Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F82226B2DEED93900D6822B /* WatchSlayvega Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "WatchSlayvega Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FBD54902DDEBD2900332EA1 /* ALP_Slayvega.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALP_Slayvega.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FBD549D2DDEBD2B00332EA1 /* ALP_SlayvegaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ALP_SlayvegaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FBD54A72DDEBD2B00332EA1 /* ALP_SlayvegaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ALP_SlayvegaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		3F8222812DEED96B00D6822B /* Exceptions for "ALP_Slayvega" folder in "WatchSlayvega Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Model/CommentModel.swift,
+			);
+			target = 3F8222542DEED93800D6822B /* WatchSlayvega Watch App */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		3F3531B72DEEB72700ED7027 /* Mac_ALP_Slayvega */ = {
+		3F8222562DEED93800D6822B /* WatchSlayvega Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Mac_ALP_Slayvega;
+			path = "WatchSlayvega Watch App";
 			sourceTree = "<group>";
 		};
-		3F3531C62DEEB72800ED7027 /* Mac_ALP_SlayvegaTests */ = {
+		3F8222642DEED93900D6822B /* WatchSlayvega Watch AppTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Mac_ALP_SlayvegaTests;
+			path = "WatchSlayvega Watch AppTests";
 			sourceTree = "<group>";
 		};
-		3F3531D02DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests */ = {
+		3F82226E2DEED93900D6822B /* WatchSlayvega Watch AppUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Mac_ALP_SlayvegaUITests;
+			path = "WatchSlayvega Watch AppUITests";
 			sourceTree = "<group>";
 		};
 		3FBD54922DDEBD2900332EA1 /* ALP_Slayvega */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3F8222812DEED96B00D6822B /* Exceptions for "ALP_Slayvega" folder in "WatchSlayvega Watch App" target */,
+			);
 			path = ALP_Slayvega;
 			sourceTree = "<group>";
 		};
@@ -88,21 +123,21 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		3F3531B32DEEB72700ED7027 /* Frameworks */ = {
+		3F8222522DEED93800D6822B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3F3531C02DEEB72800ED7027 /* Frameworks */ = {
+		3F82225E2DEED93900D6822B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3F3531CA2DEEB72800ED7027 /* Frameworks */ = {
+		3F8222682DEED93900D6822B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -144,9 +179,9 @@
 				3FBD54922DDEBD2900332EA1 /* ALP_Slayvega */,
 				3FBD54A02DDEBD2B00332EA1 /* ALP_SlayvegaTests */,
 				3FBD54AA2DDEBD2B00332EA1 /* ALP_SlayvegaUITests */,
-				3F3531B72DEEB72700ED7027 /* Mac_ALP_Slayvega */,
-				3F3531C62DEEB72800ED7027 /* Mac_ALP_SlayvegaTests */,
-				3F3531D02DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests */,
+				3F8222562DEED93800D6822B /* WatchSlayvega Watch App */,
+				3F8222642DEED93900D6822B /* WatchSlayvega Watch AppTests */,
+				3F82226E2DEED93900D6822B /* WatchSlayvega Watch AppUITests */,
 				3FBD54912DDEBD2900332EA1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -157,9 +192,9 @@
 				3FBD54902DDEBD2900332EA1 /* ALP_Slayvega.app */,
 				3FBD549D2DDEBD2B00332EA1 /* ALP_SlayvegaTests.xctest */,
 				3FBD54A72DDEBD2B00332EA1 /* ALP_SlayvegaUITests.xctest */,
-				3F3531B62DEEB72700ED7027 /* Mac_ALP_Slayvega.app */,
-				3F3531C32DEEB72800ED7027 /* Mac_ALP_SlayvegaTests.xctest */,
-				3F3531CD2DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests.xctest */,
+				3F8222552DEED93800D6822B /* WatchSlayvega Watch App.app */,
+				3F8222612DEED93900D6822B /* WatchSlayvega Watch AppTests.xctest */,
+				3F82226B2DEED93900D6822B /* WatchSlayvega Watch AppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -167,72 +202,72 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3F3531B52DEEB72700ED7027 /* Mac_ALP_Slayvega */ = {
+		3F8222542DEED93800D6822B /* WatchSlayvega Watch App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3F3531D52DEEB72800ED7027 /* Build configuration list for PBXNativeTarget "Mac_ALP_Slayvega" */;
+			buildConfigurationList = 3F8222762DEED93900D6822B /* Build configuration list for PBXNativeTarget "WatchSlayvega Watch App" */;
 			buildPhases = (
-				3F3531B22DEEB72700ED7027 /* Sources */,
-				3F3531B32DEEB72700ED7027 /* Frameworks */,
-				3F3531B42DEEB72700ED7027 /* Resources */,
+				3F8222512DEED93800D6822B /* Sources */,
+				3F8222522DEED93800D6822B /* Frameworks */,
+				3F8222532DEED93800D6822B /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				3F3531B72DEEB72700ED7027 /* Mac_ALP_Slayvega */,
+				3F8222562DEED93800D6822B /* WatchSlayvega Watch App */,
 			);
-			name = Mac_ALP_Slayvega;
+			name = "WatchSlayvega Watch App";
 			packageProductDependencies = (
 			);
-			productName = Mac_ALP_Slayvega;
-			productReference = 3F3531B62DEEB72700ED7027 /* Mac_ALP_Slayvega.app */;
+			productName = "WatchSlayvega Watch App";
+			productReference = 3F8222552DEED93800D6822B /* WatchSlayvega Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
-		3F3531C22DEEB72800ED7027 /* Mac_ALP_SlayvegaTests */ = {
+		3F8222602DEED93900D6822B /* WatchSlayvega Watch AppTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3F3531D82DEEB72800ED7027 /* Build configuration list for PBXNativeTarget "Mac_ALP_SlayvegaTests" */;
+			buildConfigurationList = 3F82227A2DEED93900D6822B /* Build configuration list for PBXNativeTarget "WatchSlayvega Watch AppTests" */;
 			buildPhases = (
-				3F3531BF2DEEB72800ED7027 /* Sources */,
-				3F3531C02DEEB72800ED7027 /* Frameworks */,
-				3F3531C12DEEB72800ED7027 /* Resources */,
+				3F82225D2DEED93900D6822B /* Sources */,
+				3F82225E2DEED93900D6822B /* Frameworks */,
+				3F82225F2DEED93900D6822B /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				3F3531C52DEEB72800ED7027 /* PBXTargetDependency */,
+				3F8222632DEED93900D6822B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				3F3531C62DEEB72800ED7027 /* Mac_ALP_SlayvegaTests */,
+				3F8222642DEED93900D6822B /* WatchSlayvega Watch AppTests */,
 			);
-			name = Mac_ALP_SlayvegaTests;
+			name = "WatchSlayvega Watch AppTests";
 			packageProductDependencies = (
 			);
-			productName = Mac_ALP_SlayvegaTests;
-			productReference = 3F3531C32DEEB72800ED7027 /* Mac_ALP_SlayvegaTests.xctest */;
+			productName = "WatchSlayvega Watch AppTests";
+			productReference = 3F8222612DEED93900D6822B /* WatchSlayvega Watch AppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		3F3531CC2DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests */ = {
+		3F82226A2DEED93900D6822B /* WatchSlayvega Watch AppUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3F3531DB2DEEB72800ED7027 /* Build configuration list for PBXNativeTarget "Mac_ALP_SlayvegaUITests" */;
+			buildConfigurationList = 3F82227D2DEED93900D6822B /* Build configuration list for PBXNativeTarget "WatchSlayvega Watch AppUITests" */;
 			buildPhases = (
-				3F3531C92DEEB72800ED7027 /* Sources */,
-				3F3531CA2DEEB72800ED7027 /* Frameworks */,
-				3F3531CB2DEEB72800ED7027 /* Resources */,
+				3F8222672DEED93900D6822B /* Sources */,
+				3F8222682DEED93900D6822B /* Frameworks */,
+				3F8222692DEED93900D6822B /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				3F3531CF2DEEB72800ED7027 /* PBXTargetDependency */,
+				3F82226D2DEED93900D6822B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				3F3531D02DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests */,
+				3F82226E2DEED93900D6822B /* WatchSlayvega Watch AppUITests */,
 			);
-			name = Mac_ALP_SlayvegaUITests;
+			name = "WatchSlayvega Watch AppUITests";
 			packageProductDependencies = (
 			);
-			productName = Mac_ALP_SlayvegaUITests;
-			productReference = 3F3531CD2DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests.xctest */;
+			productName = "WatchSlayvega Watch AppUITests";
+			productReference = 3F82226B2DEED93900D6822B /* WatchSlayvega Watch AppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		3FBD548F2DDEBD2900332EA1 /* ALP_Slayvega */ = {
@@ -242,10 +277,12 @@
 				3FBD548C2DDEBD2900332EA1 /* Sources */,
 				3FBD548D2DDEBD2900332EA1 /* Frameworks */,
 				3FBD548E2DDEBD2900332EA1 /* Resources */,
+				3F8222792DEED93900D6822B /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3F8222742DEED93900D6822B /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				3FBD54922DDEBD2900332EA1 /* ALP_Slayvega */,
@@ -318,16 +355,16 @@
 				LastSwiftUpdateCheck = 1630;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
-					3F3531B52DEEB72700ED7027 = {
+					3F8222542DEED93800D6822B = {
 						CreatedOnToolsVersion = 16.3;
 					};
-					3F3531C22DEEB72800ED7027 = {
+					3F8222602DEED93900D6822B = {
 						CreatedOnToolsVersion = 16.3;
-						TestTargetID = 3F3531B52DEEB72700ED7027;
+						TestTargetID = 3F8222542DEED93800D6822B;
 					};
-					3F3531CC2DEEB72800ED7027 = {
+					3F82226A2DEED93900D6822B = {
 						CreatedOnToolsVersion = 16.3;
-						TestTargetID = 3F3531B52DEEB72700ED7027;
+						TestTargetID = 3F8222542DEED93800D6822B;
 					};
 					3FBD548F2DDEBD2900332EA1 = {
 						CreatedOnToolsVersion = 16.3;
@@ -362,29 +399,29 @@
 				3FBD548F2DDEBD2900332EA1 /* ALP_Slayvega */,
 				3FBD549C2DDEBD2B00332EA1 /* ALP_SlayvegaTests */,
 				3FBD54A62DDEBD2B00332EA1 /* ALP_SlayvegaUITests */,
-				3F3531B52DEEB72700ED7027 /* Mac_ALP_Slayvega */,
-				3F3531C22DEEB72800ED7027 /* Mac_ALP_SlayvegaTests */,
-				3F3531CC2DEEB72800ED7027 /* Mac_ALP_SlayvegaUITests */,
+				3F8222542DEED93800D6822B /* WatchSlayvega Watch App */,
+				3F8222602DEED93900D6822B /* WatchSlayvega Watch AppTests */,
+				3F82226A2DEED93900D6822B /* WatchSlayvega Watch AppUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		3F3531B42DEEB72700ED7027 /* Resources */ = {
+		3F8222532DEED93800D6822B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3F3531C12DEEB72800ED7027 /* Resources */ = {
+		3F82225F2DEED93900D6822B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3F3531CB2DEEB72800ED7027 /* Resources */ = {
+		3F8222692DEED93900D6822B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -415,21 +452,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		3F3531B22DEEB72700ED7027 /* Sources */ = {
+		3F8222512DEED93800D6822B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3F3531BF2DEEB72800ED7027 /* Sources */ = {
+		3F82225D2DEED93900D6822B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3F3531C92DEEB72800ED7027 /* Sources */ = {
+		3F8222672DEED93900D6822B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -460,15 +497,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3F3531C52DEEB72800ED7027 /* PBXTargetDependency */ = {
+		3F8222632DEED93900D6822B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3F3531B52DEEB72700ED7027 /* Mac_ALP_Slayvega */;
-			targetProxy = 3F3531C42DEEB72800ED7027 /* PBXContainerItemProxy */;
+			target = 3F8222542DEED93800D6822B /* WatchSlayvega Watch App */;
+			targetProxy = 3F8222622DEED93900D6822B /* PBXContainerItemProxy */;
 		};
-		3F3531CF2DEEB72800ED7027 /* PBXTargetDependency */ = {
+		3F82226D2DEED93900D6822B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3F3531B52DEEB72700ED7027 /* Mac_ALP_Slayvega */;
-			targetProxy = 3F3531CE2DEEB72800ED7027 /* PBXContainerItemProxy */;
+			target = 3F8222542DEED93800D6822B /* WatchSlayvega Watch App */;
+			targetProxy = 3F82226C2DEED93900D6822B /* PBXContainerItemProxy */;
+		};
+		3F8222742DEED93900D6822B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3F8222542DEED93800D6822B /* WatchSlayvega Watch App */;
+			targetProxy = 3F8222732DEED93900D6822B /* PBXContainerItemProxy */;
 		};
 		3FBD549F2DDEBD2B00332EA1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -483,130 +525,135 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		3F3531D62DEEB72800ED7027 /* Debug */ = {
+		3F8222772DEED93900D6822B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Mac_ALP_Slayvega/Mac_ALP_SlayvegaDebug.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7U43528992;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_CFBundleDisplayName = WatchSlayvega;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "imt.ALP-Slayvega";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
-					"@executable_path/../Frameworks",
+					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.4;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "DP.Mac-ALP-Slayvega";
+				PRODUCT_BUNDLE_IDENTIFIER = "imt.ALP-Slayvega.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = YES;
-				SDKROOT = macosx;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.4;
 			};
 			name = Debug;
 		};
-		3F3531D72DEEB72800ED7027 /* Release */ = {
+		3F8222782DEED93900D6822B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Mac_ALP_Slayvega/Mac_ALP_Slayvega.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P66CL8827J;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_CFBundleDisplayName = WatchSlayvega;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "imt.ALP-Slayvega";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
-					"@executable_path/../Frameworks",
+					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.4;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "DP.Mac-ALP-Slayvega";
+				PRODUCT_BUNDLE_IDENTIFIER = "imt.ALP-Slayvega.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = YES;
-				SDKROOT = macosx;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.4;
 			};
 			name = Release;
 		};
-		3F3531D92DEEB72800ED7027 /* Debug */ = {
+		3F82227B2DEED93900D6822B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.4;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "DP.Mac-ALP-SlayvegaTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "DP.WatchSlayvega-Watch-AppTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = watchos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mac_ALP_Slayvega.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Mac_ALP_Slayvega";
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WatchSlayvega Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WatchSlayvega Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.4;
 			};
 			name = Debug;
 		};
-		3F3531DA2DEEB72800ED7027 /* Release */ = {
+		3F82227C2DEED93900D6822B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.4;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "DP.Mac-ALP-SlayvegaTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "DP.WatchSlayvega-Watch-AppTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = watchos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mac_ALP_Slayvega.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Mac_ALP_Slayvega";
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WatchSlayvega Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WatchSlayvega Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.4;
 			};
 			name = Release;
 		};
-		3F3531DC2DEEB72800ED7027 /* Debug */ = {
+		3F82227E2DEED93900D6822B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.4;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "DP.Mac-ALP-SlayvegaUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "DP.WatchSlayvega-Watch-AppUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = watchos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = Mac_ALP_Slayvega;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "WatchSlayvega Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.4;
 			};
 			name = Debug;
 		};
-		3F3531DD2DEEB72800ED7027 /* Release */ = {
+		3F82227F2DEED93900D6822B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.4;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "DP.Mac-ALP-SlayvegaUITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "DP.WatchSlayvega-Watch-AppUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = watchos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = Mac_ALP_Slayvega;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "WatchSlayvega Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.4;
 			};
 			name = Release;
 		};
@@ -736,7 +783,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P66CL8827J;
+				DEVELOPMENT_TEAM = 7U43528992;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -858,29 +905,29 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3F3531D52DEEB72800ED7027 /* Build configuration list for PBXNativeTarget "Mac_ALP_Slayvega" */ = {
+		3F8222762DEED93900D6822B /* Build configuration list for PBXNativeTarget "WatchSlayvega Watch App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3F3531D62DEEB72800ED7027 /* Debug */,
-				3F3531D72DEEB72800ED7027 /* Release */,
+				3F8222772DEED93900D6822B /* Debug */,
+				3F8222782DEED93900D6822B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3F3531D82DEEB72800ED7027 /* Build configuration list for PBXNativeTarget "Mac_ALP_SlayvegaTests" */ = {
+		3F82227A2DEED93900D6822B /* Build configuration list for PBXNativeTarget "WatchSlayvega Watch AppTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3F3531D92DEEB72800ED7027 /* Debug */,
-				3F3531DA2DEEB72800ED7027 /* Release */,
+				3F82227B2DEED93900D6822B /* Debug */,
+				3F82227C2DEED93900D6822B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3F3531DB2DEEB72800ED7027 /* Build configuration list for PBXNativeTarget "Mac_ALP_SlayvegaUITests" */ = {
+		3F82227D2DEED93900D6822B /* Build configuration list for PBXNativeTarget "WatchSlayvega Watch AppUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3F3531DC2DEEB72800ED7027 /* Debug */,
-				3F3531DD2DEEB72800ED7027 /* Release */,
+				3F82227E2DEED93900D6822B /* Debug */,
+				3F82227F2DEED93900D6822B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

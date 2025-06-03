@@ -1,14 +1,14 @@
 //
-//  Mac_ALP_SlayvegaTests.swift
-//  Mac_ALP_SlayvegaTests
+//  WatchSlayvega_Watch_AppTests.swift
+//  WatchSlayvega Watch AppTests
 //
 //  Created by student on 03/06/25.
 //
 
 import XCTest
-@testable import Mac_ALP_Slayvega
+@testable import WatchSlayvega_Watch_App
 
-final class Mac_ALP_SlayvegaTests: XCTestCase {
+final class WatchSlayvega_Watch_AppTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
