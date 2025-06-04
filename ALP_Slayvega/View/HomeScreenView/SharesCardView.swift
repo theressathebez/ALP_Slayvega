@@ -2,30 +2,33 @@ import SwiftUI
 
 struct SharesCardView: View {
     let community: CommunityModel
-    let commentCount: Int
+//    let commentCount: Int
 
     @EnvironmentObject var authVM: AuthViewModel
     @State private var isActive = false
-
-    var avatarLetter: String {
-        if community.username.isEmpty {
-            return "A"
-        } else {
-            return String(community.username.prefix(1)).uppercased()
-        }
-    }
+    @StateObject private var commentVM = CommentViewModel()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             // Avatar & Username
             HStack(spacing: 10) {
-                ZStack {
+                if community.username.isEmpty {
                     Circle()
                         .fill(Color.gray.opacity(0.2))
                         .frame(width: 40, height: 40)
-                    Text(avatarLetter)
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(.gray)
+                        .overlay(
+                            Image(systemName: "person.crop.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .foregroundColor(.gray)
+                                .padding(5)
+                        )
+                } else {
+                    Image("sampleProfile") // Replace with actual image loading if available
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 40, height: 40)
+                        .clipShape(Circle())
                 }
 
                 Text(community.username.isEmpty ? "Anonymous" : community.username)
@@ -43,7 +46,7 @@ struct SharesCardView: View {
 
             // Footer: Comments, Likes, More button
             HStack {
-                Label("\(commentCount)", systemImage: "bubble.right")
+                Label("\(commentVM.comments.count)", systemImage: "bubble.right")
                     .font(.subheadline)
                     .foregroundColor(Color.fromHex("#7D7D93"))
 
@@ -66,13 +69,16 @@ struct SharesCardView: View {
                 }
             }
 
-            // Internal navigation
+            // ✅ Internal navigation
             NavigationLink(
                 destination: CommentDetailView(community: community, authVM: authVM),
                 isActive: $isActive,
                 label: { EmptyView() }
             )
             .hidden()
+        }
+        .onAppear{
+            commentVM.loadComments(for: community.id)
         }
         .padding()
         .background(
@@ -83,3 +89,4 @@ struct SharesCardView: View {
         .padding(.horizontal, 5)
     }
 }
+

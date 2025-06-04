@@ -4,13 +4,15 @@ struct HomeView: View {
     @EnvironmentObject var authVM: AuthViewModel
     @EnvironmentObject var quotesVM: QuotesViewModel
     @EnvironmentObject var communityVM: CommunityViewModel
+    
+    
 
     let notificationCount = 9
 
-    var topShares: [CommunityModel] {
+    var topLikes: [CommunityModel] {
         communityVM.communities
             .sorted { $0.communityLikeCount > $1.communityLikeCount }
-            .prefix(5)
+            .prefix(10)
             .map { $0 }
     }
 
@@ -56,12 +58,12 @@ struct HomeView: View {
                         }
                     }
                     .padding(.horizontal, 20)
-
+                    
                     // Share Cards (Horizontal Scroll)
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 12) {
-                            ForEach(topShares.indices, id: \.self) { index in
-                                SharesCardView(community: topShares[index], commentCount: 33)
+                            ForEach(topLikes.indices, id: \.self) { index in
+                                SharesCardView(community: topLikes[index])
                                     .environmentObject(authVM)
                                     .padding(.leading, index == 0 ? 20 : 0)
                             }
@@ -90,6 +92,8 @@ struct HomeView: View {
                     authVM.fetchUserProfile()
                 }
                 communityVM.loadAllCommunities()
+                
+                    
             }
             .background(Color.white.ignoresSafeArea())
             .navigationTitle("")
