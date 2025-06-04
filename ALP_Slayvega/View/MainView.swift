@@ -19,7 +19,7 @@ struct MainView: View {
                     Text("Shares")
                 }
             
-            MindfulnessView()
+            StartPageView()
                 .tabItem {
                     Label("Mindfulness", systemImage: "brain.head.profile")
                 }

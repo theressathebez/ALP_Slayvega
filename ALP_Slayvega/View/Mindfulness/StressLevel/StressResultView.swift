@@ -10,9 +10,7 @@ import SwiftUI
 
 struct StressResultView: View {
     @ObservedObject var viewModel: StressQuestionViewModel
-    @ObservedObject var mindfulnessViewModel: MindfulnessViewModel
     @Environment(\.dismiss) var dismiss
-    @State private var navigateToMindfulness = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -91,32 +89,43 @@ struct StressResultView: View {
             Spacer()
 
             // Continue Button
-            NavigationLink(
-                destination: MindfulnessView(),
-                isActive: $navigateToMindfulness
-            ) {
-                Button(action: {
-                    mindfulnessViewModel.saveStressResult(
-                        stressLevel: Int(viewModel.averageScore),
-                        userId: Auth.auth().currentUser?.uid ?? "unknown_user"
-                    )
-
-                    navigateToMindfulness = true
-                }) {
-                    Text("Continue")
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 60)
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(30)
-                        .padding(.horizontal, 30)
+            Button(action: {
+                viewModel.handleSaveStressResult()
+            }) {
+                HStack {
+                    if viewModel.isSaving {
+                        ProgressView()
+                            .progressViewStyle(
+                                CircularProgressViewStyle(tint: .white)
+                            )
+                            .scaleEffect(0.8)
+                        Text("Saving...")
+                    } else {
+                        Text("Continue")
+                    }
                 }
-                .padding(.bottom, 50)
+                .fontWeight(.semibold)
+                .frame(maxWidth: .infinity)
+                .frame(height: 60)
+                .background(viewModel.isSaving ? Color.gray : Color.orange)
+                .foregroundColor(.white)
+                .cornerRadius(30)
+                .padding(.horizontal, 30)
             }
+            .disabled(viewModel.isSaving)
+            .padding(.bottom, 50)
         }
         .navigationBarHidden(true)
         .background(Color(.systemBackground).ignoresSafeArea())
+        .alert("Error", isPresented: $viewModel.shouldShowAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(viewModel.alertMessage)
+        }
+        .navigationDestination(isPresented: $viewModel.shouldNavigateToHome) {
+            HomeView()
+                .navigationBarBackButtonHidden(true)
+        }
     }
 }
 
@@ -130,10 +139,9 @@ struct StressResultView: View {
         stressVM.questions[4].id: 3,
     ]
 
-    let mindfulnessVM = MindfulnessViewModel()
-
-    return StressResultView(
-        viewModel: stressVM,
-        mindfulnessViewModel: mindfulnessVM
-    )
+    return NavigationView {
+        StressResultView(
+            viewModel: stressVM
+        )
+    }
 }

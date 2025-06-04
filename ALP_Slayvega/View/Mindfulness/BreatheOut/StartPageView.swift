@@ -1,18 +1,17 @@
 //
-//  CheckStressLevelView.swift
+//  StartPageView.swift
 //  ALP_Slayvega
 //
-//  Created by student on 22/05/25.
+//  Created by Joy Luist on 04/06/25.
 //
 
 import SwiftUI
 
-struct CheckStressLevelView: View {
-
+struct StartPageView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Text("Check Stress Level")
+                Text("Deep Breathe 4-7-8")
                     .font(.largeTitle.bold())
                     .foregroundColor(.primary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -32,7 +31,9 @@ struct CheckStressLevelView: View {
 
                     Text(
                         """
-                        Before checking your stress level, take a moment to relax. Our system will guide you through a few questions. Please answer them honestly. Based on your answers, we’ll show you how stressed you might currently be.
+                        The 4-7-8 breathing technique helps you relax by slowing down your breath. 
+                        Breathe in quietly through your nose for 4 seconds, hold your breath for 7 seconds, 
+                        then exhale forcefully through your mouth for 8 seconds. Repeat this cycle a few times to calm your mind and body.
                         """
                     )
                     .font(.body)
@@ -42,12 +43,12 @@ struct CheckStressLevelView: View {
                 }
                 .padding(.bottom, 24)
 
-                NavigationLink(destination: StressQuestionView()) {
-                    Text("Continue")
+                NavigationLink(destination: BreatheOutView()) {
+                    Text("Start Breathing")
                         .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)
                         .frame(height: 60)
-                        .background(Color(red: 1.0, green: 0.56, blue: 0.427))
+                        .background(Color(red: 0.27, green: 0.52, blue: 0.96))  // Warna biru kalem
                         .foregroundColor(.white)
                         .cornerRadius(30)
                         .padding(.horizontal)
@@ -62,16 +63,12 @@ struct CheckStressLevelView: View {
 
                 Spacer()
             }
-            .navigationTitle("Calibrate")
             .navigationBarTitleDisplayMode(.inline)
             .background(Color(.systemBackground))
-            .toolbar(.hidden, for: .tabBar)
-            
         }
-        
     }
 }
 
 #Preview {
-    CheckStressLevelView()
+    StartPageView()
 }
