@@ -4,30 +4,29 @@ import Firebase
 import FirebaseAppCheck
 
 @main
-struct ALP_SlayvegaApp: App {
-    @StateObject var authViewModel = AuthViewModel()
-    @StateObject var quotesVM = QuotesViewModel()
-    @StateObject var communityVM = CommunityViewModel()
-    @StateObject var iosConnectivity = iOSConnectivity.shared // Initialize the shared instance
+struct ALP_SlayvegaApp: App { //
+    @StateObject var authViewModel = AuthViewModel() //
+    @StateObject var quotesVM = QuotesViewModel() //
+    @StateObject var communityVM = CommunityViewModel() //
+    @StateObject var iosConnectivity = iOSConnectivity.shared // Inisialisasi shared instance
 
-    init() {
-        FirebaseApp.configure()
+    init(){ //
+        FirebaseApp.configure() //
         #if DEBUG
-        let providerFactory = AppCheckDebugProviderFactory()
-        AppCheck.setAppCheckProviderFactory(providerFactory)
+        let providerFactory = AppCheckDebugProviderFactory() //
+        AppCheck.setAppCheckProviderFactory(providerFactory) //
         #endif
-        // The iOSConnectivity.shared is already initialized by now.
-        // You can call methods on it if needed, e.g., iosConnectivity.manualSyncWithWatch()
-        // but it should activate itself.
+        // iOSConnectivity.shared akan otomatis mengaktifkan sesi WCSession karena inisialisasinya.
+        print("ALP_SlayvegaApp: iOSConnectivity shared instance accessed, WCSession should be activating if supported.")
     }
     
-    var body: some Scene {
-        WindowGroup {
-            MainView()
-                .environmentObject(authViewModel)
-                .environmentObject(quotesVM)
-                .environmentObject(communityVM)
-                .environmentObject(iosConnectivity) // Optional: if views need to observe it
+    var body: some Scene { //
+        WindowGroup { //
+            MainView() //
+                .environmentObject(authViewModel) //
+                .environmentObject(quotesVM) //
+                .environmentObject(communityVM) //
+                .environmentObject(iosConnectivity) 
         }
     }
 }
