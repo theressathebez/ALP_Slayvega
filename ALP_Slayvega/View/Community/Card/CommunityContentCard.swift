@@ -19,11 +19,13 @@ struct CommunityContentCard: View {
     var onDelete: () -> Void
     var community: CommunityModel // Add the complete community model
     var authVM: AuthViewModel // Add AuthViewModel for navigation
+    var communityVM: CommunityViewModel // Add CommunityViewModel for like functionality
     
     @State private var isLiked: Bool = false
     @State private var currentLikeCount: Int = 0
     @State private var showDeleteAlert: Bool = false
     @State private var showCommentView: Bool = false
+    @State private var userLikes: Set<String> = [] // Track which users liked this post
 
     var body: some View {
         ZStack {
@@ -74,10 +76,9 @@ struct CommunityContentCard: View {
                     }
                     .buttonStyle(PlainButtonStyle())
 
-                    // Like Button
+                    // Like Button - Updated for real-time functionality
                     Button(action: {
-                        isLiked.toggle()
-                        currentLikeCount += isLiked ? 1 : -1
+                        toggleLikePost()
                     }) {
                         Image(systemName: isLiked ? "heart.fill" : "heart")
                             .foregroundColor(isLiked ? .red : .gray)
@@ -97,6 +98,8 @@ struct CommunityContentCard: View {
         }
         .onAppear {
             currentLikeCount = initialLikeCount
+            checkIfUserLikedPost()
+            loadLikeCount()
         }
         .alert("Delete Post", isPresented: $showDeleteAlert) {
             Button("Cancel", role: .cancel) { }
@@ -108,6 +111,41 @@ struct CommunityContentCard: View {
         }
         .sheet(isPresented: $showCommentView) {
             CommentDetailView(community: community, authVM: authVM)
+        }
+    }
+    
+    // MARK: - Like Functionality
+    private func toggleLikePost() {
+        guard let currentUserId = currentUserId else { return }
+        
+        // Optimistic UI update
+        isLiked.toggle()
+        currentLikeCount += isLiked ? 1 : -1
+        
+        // Update Firebase
+        communityVM.togglePostLike(
+            postId: communityId,
+            userId: currentUserId,
+            isLiked: isLiked,
+            currentLikeCount: currentLikeCount
+        )
+    }
+    
+    private func checkIfUserLikedPost() {
+        guard let currentUserId = currentUserId else { return }
+        
+        communityVM.checkIfUserLikedPost(postId: communityId, userId: currentUserId) { [self] liked in
+            DispatchQueue.main.async {
+                self.isLiked = liked
+            }
+        }
+    }
+    
+    private func loadLikeCount() {
+        communityVM.observePostLikeCount(postId: communityId) { [self] likeCount in
+            DispatchQueue.main.async {
+                self.currentLikeCount = likeCount
+            }
         }
     }
 }
@@ -132,6 +170,7 @@ struct CommunityContentCard: View {
             communityDates: Date(),
             userId: ""
         ),
-        authVM: AuthViewModel()
+        authVM: AuthViewModel(),
+        communityVM: CommunityViewModel()
     )
 }

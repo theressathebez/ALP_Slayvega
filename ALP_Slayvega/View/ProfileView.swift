@@ -82,10 +82,8 @@ struct ProfileView: View {
                         .padding(.horizontal)
                     }
                     
-                    // Action Buttons
                     VStack(spacing: 12) {
                         if isEditing {
-                            // Save and Cancel buttons when editing
                             HStack(spacing: 12) {
                                 Button("Cancel") {
                                     cancelEditing()
@@ -119,8 +117,6 @@ struct ProfileView: View {
                             .cornerRadius(20)
                             .padding(.horizontal)
                         }
-                        
-                        // Change Password button
                         Button("Change Password") {
                             showingPasswordChange = true
                         }
@@ -131,7 +127,6 @@ struct ProfileView: View {
                         .cornerRadius(20)
                         .padding(.horizontal)
                         
-                        // Logout button
                         Button("Logout") {
                             authVM.signOut()
                             showAuthSheet = true

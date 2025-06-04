@@ -12,8 +12,10 @@ import FirebaseAuth
 class CommentViewModel: ObservableObject {
     @Published var comments: [CommentModel] = []
     @Published var isLoading: Bool = false
+    @Published var userLikes: [String: Bool] = [:] // Track user likes per comment
     
     private var dbRef = Database.database().reference().child("comments")
+    private var likesRef = Database.database().reference().child("comment_likes")
     private var commentsListener: DatabaseHandle?
     
     private var userId: String? {
@@ -70,8 +72,24 @@ class CommentViewModel: ObservableObject {
                     // Sort comments by date (newest first)
                     self.comments = fetchedComments.sorted { $0.CommentDates > $1.CommentDates }
                     self.isLoading = false
+                    
+                    // Load user likes for these comments
+                    self.loadUserLikes()
                 }
             }
+    }
+    
+    // Load user's like status for all comments
+    private func loadUserLikes() {
+        guard let uid = userId else { return }
+        
+        for comment in comments {
+            likesRef.child(comment.CommentId).child(uid).observeSingleEvent(of: .value) { [weak self] snapshot in
+                DispatchQueue.main.async {
+                    self?.userLikes[comment.CommentId] = snapshot.exists()
+                }
+            }
+        }
     }
     
     // Add new comment
@@ -109,6 +127,9 @@ class CommentViewModel: ObservableObject {
     
     // Delete comment (only by comment owner)
     func deleteComment(commentId: String) {
+        // Also delete all likes for this comment
+        likesRef.child(commentId).removeValue()
+        
         dbRef.child(commentId).removeValue { error, _ in
             if let error = error {
                 print("Error deleting comment: \(error.localizedDescription)")
@@ -116,14 +137,67 @@ class CommentViewModel: ObservableObject {
         }
     }
     
-    // Update comment like count
-    func toggleCommentLike(commentId: String, currentLikeCount: Int, isLiked: Bool) {
-        let newLikeCount = isLiked ? currentLikeCount + 1 : currentLikeCount - 1
-        dbRef.child(commentId).child("CommentLikeCount").setValue(max(0, newLikeCount)) { error, _ in
-            if let error = error {
-                print("Error updating like count: \(error.localizedDescription)")
+    // Toggle like with realtime update
+    func toggleCommentLike(commentId: String) {
+        guard let uid = userId else { return }
+        
+        let isCurrentlyLiked = userLikes[commentId] ?? false
+        let newLikedState = !isCurrentlyLiked
+        
+        // Update local state immediately for smooth UX
+        userLikes[commentId] = newLikedState
+        
+        // Reference to the specific like
+        let userLikeRef = likesRef.child(commentId).child(uid)
+        let commentLikeCountRef = dbRef.child(commentId).child("CommentLikeCount")
+        
+        if newLikedState {
+            // User is liking the comment
+            userLikeRef.setValue(true) { [weak self] error, _ in
+                if error != nil {
+                    // Revert local state if failed
+                    DispatchQueue.main.async {
+                        self?.userLikes[commentId] = false
+                    }
+                }
+            }
+            
+            // Increment like count
+            commentLikeCountRef.runTransactionBlock { currentData in
+                if let currentCount = currentData.value as? Int {
+                    currentData.value = currentCount + 1
+                } else {
+                    currentData.value = 1
+                }
+                return TransactionResult.success(withValue: currentData)
+            }
+            
+        } else {
+            // User is unliking the comment
+            userLikeRef.removeValue { [weak self] error, _ in
+                if error != nil {
+                    // Revert local state if failed
+                    DispatchQueue.main.async {
+                        self?.userLikes[commentId] = true
+                    }
+                }
+            }
+            
+            // Decrement like count
+            commentLikeCountRef.runTransactionBlock { currentData in
+                if let currentCount = currentData.value as? Int {
+                    currentData.value = max(0, currentCount - 1)
+                } else {
+                    currentData.value = 0
+                }
+                return TransactionResult.success(withValue: currentData)
             }
         }
+    }
+    
+    // Check if current user liked a specific comment
+    func isCommentLikedByUser(commentId: String) -> Bool {
+        return userLikes[commentId] ?? false
     }
     
     // Clear comments when leaving the view
@@ -133,5 +207,6 @@ class CommentViewModel: ObservableObject {
             commentsListener = nil
         }
         comments.removeAll()
+        userLikes.removeAll()
     }
 }

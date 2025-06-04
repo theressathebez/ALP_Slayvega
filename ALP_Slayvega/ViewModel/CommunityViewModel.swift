@@ -7,9 +7,11 @@ class CommunityViewModel: ObservableObject {
     @Published var userCommunities: [CommunityModel] = []
     
     private var dbRef = Database.database().reference().child("communities")
+    private var likesRef = Database.database().reference().child("post_likes")
     private var allPostsListener: DatabaseHandle?
     private var userPostsListener: DatabaseHandle?
     private var authHandle: AuthStateDidChangeListenerHandle?
+    private var likeCountListeners: [String: DatabaseHandle] = [:]
     
     private var userId: String? {
         Auth.auth().currentUser?.uid
@@ -34,6 +36,12 @@ class CommunityViewModel: ObservableObject {
         if let handle = userPostsListener {
             dbRef.removeObserver(withHandle: handle)
         }
+        
+        // Remove all like count listeners
+        for (postId, handle) in likeCountListeners {
+            likesRef.child(postId).removeObserver(withHandle: handle)
+        }
+        likeCountListeners.removeAll()
     }
     
     // Load all posts from all users
@@ -149,15 +157,93 @@ class CommunityViewModel: ObservableObject {
     }
 
     func removeCommunity(withId id: String) {
+        // Remove the post
         dbRef.child(id).removeValue { error, _ in
             if let error = error {
                 print("Error removing post: \(error.localizedDescription)")
             }
         }
+        
+        // Remove all likes for this post
+        likesRef.child(id).removeValue()
     }
 
     func clearLocalData() {
         communities.removeAll()
         userCommunities.removeAll()
+    }
+    
+    // MARK: - Like Functionality
+    
+    // Toggle like for a post
+    func togglePostLike(postId: String, userId: String, isLiked: Bool, currentLikeCount: Int) {
+        let postLikeRef = likesRef.child(postId).child(userId)
+        let postRef = dbRef.child(postId)
+        
+        if isLiked {
+            // Add like
+            postLikeRef.setValue(true) { [weak self] error, _ in
+                if let error = error {
+                    print("Error adding like: \(error.localizedDescription)")
+                    return
+                }
+                
+                // Update like count in the post
+                postRef.child("communityLikeCount").setValue(currentLikeCount)
+            }
+        } else {
+            // Remove like
+            postLikeRef.removeValue { [weak self] error, _ in
+                if let error = error {
+                    print("Error removing like: \(error.localizedDescription)")
+                    return
+                }
+                
+                // Update like count in the post
+                postRef.child("communityLikeCount").setValue(max(0, currentLikeCount))
+            }
+        }
+    }
+    
+    // Check if user liked a specific post
+    func checkIfUserLikedPost(postId: String, userId: String, completion: @escaping (Bool) -> Void) {
+        likesRef.child(postId).child(userId).observeSingleEvent(of: .value) { snapshot in
+            completion(snapshot.exists())
+        }
+    }
+    
+    // Get real-time like count for a post
+    func observePostLikeCount(postId: String, completion: @escaping (Int) -> Void) {
+        // Remove existing listener if any
+        if let existingHandle = likeCountListeners[postId] {
+            likesRef.child(postId).removeObserver(withHandle: existingHandle)
+        }
+        
+        // Add new listener
+        let handle = likesRef.child(postId).observe(.value) { snapshot in
+            let likeCount = Int(snapshot.childrenCount)
+            completion(likeCount)
+        }
+        
+        likeCountListeners[postId] = handle
+    }
+    
+    // Stop observing like count for a specific post
+    func stopObservingLikeCount(for postId: String) {
+        if let handle = likeCountListeners[postId] {
+            likesRef.child(postId).removeObserver(withHandle: handle)
+            likeCountListeners.removeValue(forKey: postId)
+        }
+    }
+    
+    // Get all users who liked a post
+    func getUsersWhoLikedPost(postId: String, completion: @escaping ([String]) -> Void) {
+        likesRef.child(postId).observeSingleEvent(of: .value) { snapshot in
+            var userIds: [String] = []
+            for case let child as DataSnapshot in snapshot.children {
+                userIds.append(child.key)
+            }
+            completion(userIds)
+        }
     }
 }
