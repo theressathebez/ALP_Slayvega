@@ -1,3 +1,4 @@
+// ALP_Slayvega/iOSConnectivity.swift
 import WatchConnectivity
 import Foundation
 import FirebaseDatabase
@@ -5,279 +6,315 @@ import FirebaseDatabase
 class iOSConnectivity: NSObject, WCSessionDelegate, ObservableObject {
     var session: WCSession
     private var syncTimer: Timer?
-    private let syncInterval: TimeInterval = 30.0
+    private let syncInterval: TimeInterval = 180.0 // Sync every 3 minutes if reachable
     private let maxPostsToSend = 15
-    
-    @Published var isWatchConnected: Bool = false
-    @Published var connectionStatus: String = "Connecting..."
+
+    @Published var isWatchReachable: Bool = false // Renamed for clarity
+    @Published var connectionStatusMessage: String = "Initializing..." // More descriptive status
     @Published var lastSyncTime: Date?
     @Published var syncInProgress: Bool = false
-    
-    override init() {
+    @Published var lastErrorMessage: String?
+
+    static let shared = iOSConnectivity() // Make it a singleton for easy access
+
+    private override init() { // Private init for singleton
         session = WCSession.default
         super.init()
-        setupWatchConnectivity()
-    }
-    
-    private func setupWatchConnectivity() {
-        guard WCSession.isSupported() else {
+        if WCSession.isSupported() {
+            session.delegate = self
+            session.activate()
+            print("iOSConnectivity: Session activation initiated.")
+        } else {
+            print("iOSConnectivity: WCSession not supported on this device.")
             DispatchQueue.main.async {
-                self.connectionStatus = "Watch not supported"
+                self.connectionStatusMessage = "WCSession Not Supported"
+                self.lastErrorMessage = "This device does not support Watch Connectivity."
             }
-            return
-        }
-        
-        session.delegate = self
-        session.activate()
-        
-        DispatchQueue.main.async {
-            self.connectionStatus = "Activating..."
         }
     }
-    
-    // MARK: - WCSessionDelegate
+
+    // MARK: - WCSessionDelegate (iOS)
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         DispatchQueue.main.async {
+            self.lastErrorMessage = nil
             switch activationState {
             case .activated:
-                self.isWatchConnected = session.isReachable
-                self.connectionStatus = session.isReachable ? "Connected" : "Watch Unreachable"
+                self.isWatchReachable = session.isReachable
+                self.connectionStatusMessage = session.isReachable ? "Watch App Connected" : "Watch App Unreachable"
+                print("iOSConnectivity: WCSession activated. Reachable: \(session.isReachable)")
                 if session.isReachable {
+                    self.sendCommunityDataToWatch(reason: "Activation & Reachable")
                     self.startAutoSync()
                 }
             case .inactive:
-                self.isWatchConnected = false
-                self.connectionStatus = "Inactive"
+                self.isWatchReachable = false
+                self.connectionStatusMessage = "Watch Session Inactive"
+                print("iOSConnectivity: WCSession inactive.")
+                self.stopAutoSync()
             case .notActivated:
-                self.isWatchConnected = false
-                self.connectionStatus = "Not Activated"
+                self.isWatchReachable = false
+                self.connectionStatusMessage = "Watch Session Not Activated"
+                print("iOSConnectivity: WCSession not activated.")
+                self.stopAutoSync()
             @unknown default:
-                self.isWatchConnected = false
-                self.connectionStatus = "Unknown State"
+                self.isWatchReachable = false
+                self.connectionStatusMessage = "Unknown Watch Session State"
+                print("iOSConnectivity: WCSession unknown state.")
+                self.stopAutoSync()
             }
         }
-        
+
         if let error = error {
-            print("iOS WC Session activation error: \(error.localizedDescription)")
+            print("iOSConnectivity: WCSession activation error - \(error.localizedDescription)")
             DispatchQueue.main.async {
-                self.connectionStatus = "Error: \(error.localizedDescription)"
+                self.connectionStatusMessage = "Activation Error"
+                self.lastErrorMessage = error.localizedDescription
             }
         }
     }
-    
+
     func sessionDidBecomeInactive(_ session: WCSession) {
         DispatchQueue.main.async {
-            self.isWatchConnected = false
-            self.connectionStatus = "Inactive"
+            self.isWatchReachable = false
+            self.connectionStatusMessage = "Watch Session Became Inactive"
         }
-        syncTimer?.invalidate()
+        print("iOSConnectivity: sessionDidBecomeInactive")
+        stopAutoSync()
     }
-    
+
     func sessionDidDeactivate(_ session: WCSession) {
         DispatchQueue.main.async {
-            self.isWatchConnected = false
-            self.connectionStatus = "Deactivated"
+            self.isWatchReachable = false
+            self.connectionStatusMessage = "Watch Session Deactivated. Re-activating..."
         }
-        session.activate()
+        print("iOSConnectivity: sessionDidDeactivate. Attempting to reactivate.")
+        session.activate() //Re-activate the session
     }
-    
+
     func sessionReachabilityDidChange(_ session: WCSession) {
         DispatchQueue.main.async {
-            self.isWatchConnected = session.isReachable
-            self.connectionStatus = session.isReachable ? "Connected" : "Watch Unreachable"
-            
+            self.isWatchReachable = session.isReachable
+            self.connectionStatusMessage = session.isReachable ? "Watch App Connected" : "Watch App Unreachable"
+            print("iOSConnectivity: Reachability changed. Reachable: \(session.isReachable)")
             if session.isReachable {
-                self.sendCommunityDataToWatch()
+                self.lastErrorMessage = nil
+                self.sendCommunityDataToWatch(reason: "Reachability Changed & Reachable")
+                self.startAutoSync()
+            } else {
+                self.stopAutoSync()
             }
         }
     }
     
-    // MARK: - Data Transfer
-    func sendCommunityDataToWatch(completion: @escaping (Bool, String?) -> Void = { _, _ in }) {
-        guard session.activationState == .activated else {
-            completion(false, "Session not activated")
-            return
-        }
-        
-        guard session.isReachable else {
-            completion(false, "Watch not reachable")
-            return
-        }
-        
-        DispatchQueue.main.async {
-            self.syncInProgress = true
-        }
-        
-        let dbRef = Database.database().reference().child("communities")
-        dbRef.queryOrdered(byChild: "communityDates").queryLimited(toLast: UInt(maxPostsToSend)).observeSingleEvent(of: .value) { [weak self] snapshot in
-            guard let self = self else {
-                completion(false, "Self deallocated")
-                return
-            }
-            
-            var communities: [[String: Any]] = []
-            
-            for case let child as DataSnapshot in snapshot.children {
-                if let data = child.value as? [String: Any] {
-                    var communityData = data
-                    
-                    // Handle date formatting
-                    var formattedDate = ""
-                    if let timestamp = data["communityDates"] as? TimeInterval {
-                        let date = Date(timeIntervalSince1970: timestamp / 1000)
-                        let formatter = DateFormatter()
-                        formatter.dateStyle = .medium
-                        formatter.timeStyle = .short
-                        formattedDate = formatter.string(from: date)
-                    } else if let dateString = data["communityDates"] as? String {
-                        let formatter = ISO8601DateFormatter()
-                        if let date = formatter.date(from: dateString) {
-                            let displayFormatter = DateFormatter()
-                            displayFormatter.dateStyle = .medium
-                            displayFormatter.timeStyle = .short
-                            formattedDate = displayFormatter.string(from: date)
-                        }
-                    }
-                    
-                    let watchData: [String: Any] = [
-                        "id": communityData["id"] as? String ?? child.key,
-                        "username": communityData["username"] as? String ?? "Anonymous",
-                        "communityContent": communityData["communityContent"] as? String ?? "",
-                        "hashtags": communityData["hashtags"] as? String ?? "",
-                        "communityLikeCount": communityData["communityLikeCount"] as? Int ?? 0,
-                        "formattedDate": formattedDate,
-                        "userId": communityData["userId"] as? String ?? ""
-                    ]
-                    
-                    communities.append(watchData)
-                }
-            }
-            
-            // Sort by date (most recent first)
-            communities.sort {
-                let date1 = ($0["communityDates"] as? TimeInterval) ?? 0
-                let date2 = ($1["communityDates"] as? TimeInterval) ?? 0
-                return date1 > date2
-            }
-            
-            let limitedCommunities = Array(communities.prefix(self.maxPostsToSend))
-            let message = [
-                "communities": limitedCommunities,
-                "timestamp": Date().timeIntervalSince1970,
-                "count": limitedCommunities.count
-            ] as [String : Any]
-            
-            self.session.sendMessage(message, replyHandler: { reply in
-                DispatchQueue.main.async {
-                    self.syncInProgress = false
-                    self.lastSyncTime = Date()
-                }
-                print("✅ Sent \(limitedCommunities.count) communities to watch")
-                completion(true, nil)
-            }, errorHandler: { error in
-                DispatchQueue.main.async {
-                    self.syncInProgress = false
-                }
-                print("❌ Error sending communities: \(error.localizedDescription)")
-                completion(false, error.localizedDescription)
-            })
-        } withCancel: { error in
-            DispatchQueue.main.async {
-                self.syncInProgress = false
-            }
-            completion(false, "Database error: \(error.localizedDescription)")
-        }
-    }
-    
+    // MARK: - Message Handling from Watch (iOS receives from Watch)
     func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
+        print("iOSConnectivity: Received message from Watch: \(message)")
+        DispatchQueue.main.async { self.lastErrorMessage = nil }
+
         if let action = message["action"] as? String {
             switch action {
             case "requestCommunities":
-                // Immediately acknowledge the request
-                replyHandler(["status": "processing", "timestamp": Date().timeIntervalSince1970])
+                print("iOSConnectivity: Watch requested community data.")
+                // Acknowledge the request immediately
+                let ackReply = ["status": "processingRequest", "receivedAt": Date().timeIntervalSince1970] as [String : Any]
+                print("iOSConnectivity: Sending ACK to Watch for requestCommunities: \(ackReply)")
+                replyHandler(ackReply)
                 
-                // Send the data
-                sendCommunityDataToWatch { success, error in
-                    if !success {
-                        let errorMessage = ["error": error ?? "Unknown error", "timestamp": Date().timeIntervalSince1970]
-                        self.session.sendMessage(errorMessage, replyHandler: nil, errorHandler: nil)
+                // Then send the actual data
+                sendCommunityDataToWatch(reason: "Watch Requested")
+                
+            case "pingTest":
+                let pingReply = ["status": "pong", "phoneTimestamp": Date().timeIntervalSince1970] as [String : Any]
+                print("iOSConnectivity: Watch sent pingTest. Replying: \(pingReply)")
+                replyHandler(pingReply)
+                
+            default:
+                let unknownReply = ["status": "unknownAction", "actionReceived": action] as [String : Any]
+                print("iOSConnectivity: Watch sent unknown action '\(action)'. Replying: \(unknownReply)")
+                replyHandler(unknownReply)
+            }
+        } else {
+            let invalidReply = ["status": "invalidMessageFormat"] as [String : Any]
+            print("iOSConnectivity: Watch sent invalid message format. Replying: \(invalidReply)")
+            replyHandler(invalidReply)
+        }
+    }
+
+    // MARK: - Data Transfer Logic (iOS to Watch)
+    func sendCommunityDataToWatch(reason: String, completion: ((Bool, String?) -> Void)? = nil) {
+            print("iOSConnectivity: Attempting to send data to Watch. Reason: \(reason)")
+            guard session.activationState == .activated else {
+                print("iOSConnectivity: Session not activated. Cannot send.")
+                DispatchQueue.main.async { self.lastErrorMessage = "iOS Session not active." }
+                completion?(false, "iOS Session not activated")
+                return
+            }
+
+            guard self.isWatchReachable else { // Use the @Published property
+                print("iOSConnectivity: Watch not reachable. Cannot send.")
+                DispatchQueue.main.async { self.lastErrorMessage = "Watch not reachable for send." }
+                completion?(false, "Watch not reachable")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                guard !self.syncInProgress else {
+                    print("iOSConnectivity: Sync already in progress.")
+                    completion?(false, "Sync already in progress")
+                    return
+                }
+                self.syncInProgress = true
+                self.connectionStatusMessage = "Syncing with Watch..."
+                self.lastErrorMessage = nil
+            }
+            
+            print("iOSConnectivity: Fetching community data from Firebase...")
+            let dbRef = Database.database().reference().child("communities")
+            dbRef.queryOrdered(byChild: "communityDates").queryLimited(toLast: UInt(maxPostsToSend * 2))
+                .observeSingleEvent(of: .value, with: { [weak self] snapshot in // CORRECTED CLOSURE
+                guard let self = self else {
+                    completion?(false, "Self deallocated")
+                    return
+                }
+                
+                // Check if snapshot has data
+                guard snapshot.exists() else {
+                    print("iOSConnectivity: Firebase snapshot does not exist or has no data.")
+                    DispatchQueue.main.async {
+                        self.syncInProgress = false
+                        self.connectionStatusMessage = "No data from DB"
+                        self.lastErrorMessage = "Firebase data is empty or not found."
+                        // Send an empty array to the watch to clear its list if appropriate
+                        let emptyMessage = [
+                            "dataType": "communityUpdate",
+                            "communities": [],
+                            "timestamp": Date().timeIntervalSince1970,
+                            "count": 0
+                        ] as [String : Any]
+                        self.session.sendMessage(emptyMessage, replyHandler: nil, errorHandler: nil)
+                    }
+                    completion?(false, "Firebase data is empty.")
+                    return
+                }
+
+                var communitiesPayload: [[String: Any]] = []
+                var rawCommunities: [CommunityModel] = []
+
+                for case let child as DataSnapshot in snapshot.children {
+                    if let data = child.value as? [String: Any] {
+                        var communityDate = Date()
+                        if let timestamp = data["communityDates"] as? TimeInterval {
+                            communityDate = Date(timeIntervalSince1970: timestamp / 1000)
+                        } else if let dateString = data["communityDates"] as? String {
+                            let formatter = ISO8601DateFormatter()
+                            communityDate = formatter.date(from: dateString) ?? Date()
+                        }
+                        rawCommunities.append(
+                            CommunityModel(
+                                id: data["id"] as? String ?? child.key,
+                                username: data["username"] as? String ?? "Anonymous",
+                                communityContent: data["communityContent"] as? String ?? "",
+                                hashtags: data["hashtags"] as? String ?? "",
+                                communityLikeCount: data["communityLikeCount"] as? Int ?? 0,
+                                communityDates: communityDate,
+                                userId: data["userId"] as? String ?? ""
+                            )
+                        )
                     }
                 }
                 
-            case "pingTest":
-                replyHandler(["status": "pong", "timestamp": Date().timeIntervalSince1970])
+                let sortedCommunities = rawCommunities.sorted { $0.communityDates > $1.communityDates }.prefix(self.maxPostsToSend)
+                print("iOSConnectivity: Fetched \(rawCommunities.count) raw posts, sending \(sortedCommunities.count) after sorting/limiting.")
+
+                for community in sortedCommunities {
+                    let formatter = DateFormatter()
+                    formatter.dateStyle = .medium
+                    formatter.timeStyle = .short
+                    let formattedDateString = formatter.string(from: community.communityDates)
+
+                    let watchData: [String: Any] = [
+                        "id": community.id,
+                        "username": community.username,
+                        "communityContent": community.communityContent,
+                        "hashtags": community.hashtags,
+                        "communityLikeCount": community.communityLikeCount,
+                        "formattedDate": formattedDateString,
+                        "userId": community.userId
+                    ]
+                    communitiesPayload.append(watchData)
+                }
                 
-            default:
-                replyHandler(["status": "unknown_action", "timestamp": Date().timeIntervalSince1970])
+                let message = [
+                    "dataType": "communityUpdate",
+                    "communities": communitiesPayload,
+                    "timestamp": Date().timeIntervalSince1970,
+                    "count": communitiesPayload.count
+                ] as [String : Any]
+
+                print("iOSConnectivity: Sending actual data message to Watch with \(communitiesPayload.count) posts.")
+                self.session.sendMessage(message, replyHandler: { reply in
+                    DispatchQueue.main.async {
+                        self.syncInProgress = false
+                        self.lastSyncTime = Date()
+                        self.connectionStatusMessage = "Watch Ack: \(communitiesPayload.count) posts."
+                        self.lastErrorMessage = nil
+                        print("iOSConnectivity: Watch acknowledged data message. Reply: \(reply)")
+                    }
+                    completion?(true, nil)
+                }, errorHandler: { error in
+                    DispatchQueue.main.async {
+                        self.syncInProgress = false
+                        self.connectionStatusMessage = "Data Send Error"
+                        self.lastErrorMessage = error.localizedDescription
+                        print("iOSConnectivity: Error sending data message to Watch: \(error.localizedDescription)")
+                    }
+                    completion?(false, error.localizedDescription)
+                })
+            }) { [weak self] error in // CORRECTED: Added withCancel block for error handling
+                guard let self = self else { return }
+                print("iOSConnectivity: Firebase data fetch CANCELLED or ERRORED: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.syncInProgress = false
+                    self.connectionStatusMessage = "DB Fetch Error"
+                    self.lastErrorMessage = "Firebase error: \(error.localizedDescription)"
+                }
+                completion?(false, "Database error: \(error.localizedDescription)")
             }
-        } else {
-            replyHandler(["status": "invalid_message", "timestamp": Date().timeIntervalSince1970])
         }
-    }
-    
+
+
     // MARK: - Sync Management
     func startAutoSync() {
-        syncTimer?.invalidate()
-        sendCommunityDataToWatch()
-        
+        stopAutoSync()
+        guard self.isWatchReachable else { return }
+        print("iOSConnectivity: Starting auto-sync timer.")
         syncTimer = Timer.scheduledTimer(withTimeInterval: syncInterval, repeats: true) { [weak self] _ in
-            guard let self = self, self.session.isReachable && !self.syncInProgress else { return }
-            self.sendCommunityDataToWatch()
+            guard let self = self, self.isWatchReachable && !self.syncInProgress else { return }
+            print("iOSConnectivity: Auto-sync triggered.")
+            self.sendCommunityDataToWatch(reason: "Auto Sync Timer")
         }
     }
-    
+
     func stopAutoSync() {
+        print("iOSConnectivity: Stopping auto-sync timer.")
         syncTimer?.invalidate()
         syncTimer = nil
     }
     
-    func manualSync() {
-        guard !syncInProgress else { return }
-        sendCommunityDataToWatch()
-    }
-    
-    func testConnection() {
-        guard session.isReachable else {
-            DispatchQueue.main.async {
-                self.connectionStatus = "Watch not reachable"
+    func manualSyncWithWatch() {
+        print("iOSConnectivity: Manual sync triggered.")
+        sendCommunityDataToWatch(reason: "Manual Sync Button") { success, errorStr in
+            if !success {
+                DispatchQueue.main.async {
+                  self.connectionStatusMessage = "Manual Sync Failed"
+                  if let err = errorStr { self.lastErrorMessage = err }
+                }
             }
-            return
-        }
-        
-        let testMessage = ["action": "pingTest", "timestamp": Date().timeIntervalSince1970] as [String : Any]
-        session.sendMessage(testMessage, replyHandler: { reply in
-            DispatchQueue.main.async {
-                self.connectionStatus = "Connection test passed"
-            }
-        }, errorHandler: { error in
-            DispatchQueue.main.async {
-                self.connectionStatus = "Connection test failed: \(error.localizedDescription)"
-            }
-        })
-    }
-    
-    // MARK: - Utility Methods
-    func getConnectionInfo() -> [String: String] {
-        return [
-            "Activation State": getActivationStateString(),
-            "Is Reachable": session.isReachable ? "Yes" : "No",
-            "Is Paired": session.isPaired ? "Yes" : "No",
-            "Is Watch App Installed": session.isWatchAppInstalled ? "Yes" : "No",
-            "Last Sync": lastSyncTime?.formatted() ?? "Never",
-            "Sync In Progress": syncInProgress ? "Yes" : "No"
-        ]
-    }
-    
-    private func getActivationStateString() -> String {
-        switch session.activationState {
-        case .activated: return "Activated"
-        case .inactive: return "Inactive"
-        case .notActivated: return "Not Activated"
-        @unknown default: return "Unknown"
         }
     }
     
     deinit {
         stopAutoSync()
+        print("iOSConnectivity deinitialized.")
     }
 }
