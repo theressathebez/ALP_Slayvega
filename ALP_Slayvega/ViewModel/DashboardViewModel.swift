@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-@MainActor
 class DashboardViewModel: ObservableObject {
     @Published var currentStressLevel: Int = 0
     @Published var weeklyAverage: Double = 0.0
@@ -91,7 +90,7 @@ class DashboardViewModel: ObservableObject {
 
     // MARK: - Private Methods
 
-    private func fetchAndProcessStressData() async {
+    func fetchAndProcessStressData() async {
         // Fetch all stress history for the user
         await stressVM.fetchStressHistory()
 
@@ -125,7 +124,7 @@ class DashboardViewModel: ObservableObject {
         isLoading = false
     }
 
-    private func getWeeklyStressData(from history: [StressModel])
+    func getWeeklyStressData(from history: [StressModel])
         -> [StressModel]
     {
         let currentTime = Date().timeIntervalSince1970
@@ -151,7 +150,7 @@ class DashboardViewModel: ObservableObject {
         return filteredData
     }
 
-    private func calculateWeeklyStats() {
+    func calculateWeeklyStats() {
         guard !weeklyData.isEmpty else {
             weeklyAverage = 0.0
             weeklyRange = (min: 0, max: 0)
@@ -167,7 +166,7 @@ class DashboardViewModel: ObservableObject {
         weeklyRange = (min: levels.min() ?? 0, max: levels.max() ?? 0)
     }
 
-    private func getStressCategory(from score: Double) -> String {
+    func getStressCategory(from score: Double) -> String {
         switch score {
         case 0..<2.0:
             return "Low"
@@ -180,7 +179,6 @@ class DashboardViewModel: ObservableObject {
         }
     }
 
-    // Helper function untuk format weekly average dengan kategori yang benar
     var formattedWeeklyAverage: String {
         guard weeklyAverage > 0 else { return "0 Low" }
         let category = getStressCategory(from: weeklyAverage)

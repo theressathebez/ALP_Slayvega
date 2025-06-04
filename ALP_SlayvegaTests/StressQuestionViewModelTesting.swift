@@ -7,29 +7,97 @@
 
 import XCTest
 
+@testable import ALP_Slayvega
+
 final class StressQuestionViewModelTesting: XCTestCase {
 
+    var viewModel: StressQuestionViewModel!
+
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        viewModel = StressQuestionViewModel()
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        viewModel = nil
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func testInitialState() throws {
+        XCTAssertEqual(viewModel.currentQuestionIndex, 0)
+        XCTAssertFalse(viewModel.shouldNavigateToResult)
+        XCTAssertTrue(viewModel.answers.isEmpty)
+        XCTAssertNotNil(viewModel.currentQuestion)
+        XCTAssertEqual(viewModel.questions.count, 10)
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testSelectAnswerAdvancesQuestionIndex() {
+        let firstQuestionID = viewModel.currentQuestion?.id
+        viewModel.selectAnswer(3)
+
+        // Tunggu 0.6 detik agar async dispatch selesai
+        let expectation = XCTestExpectation(
+            description: "Wait for index update")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            XCTAssertEqual(self.viewModel.answers[firstQuestionID!], 3)
+            XCTAssertEqual(self.viewModel.currentQuestionIndex, 1)
+            expectation.fulfill()
         }
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func testCompletionPercentageCalculation() {
+        let viewModel = StressQuestionViewModel()
+
+        // Manually set answer and advance index
+        for _ in 0..<5 {
+            if let question = viewModel.currentQuestion {
+                viewModel.answers[question.id] = 2
+                viewModel.currentQuestionIndex += 1
+            }
+        }
+
+        XCTAssertEqual(viewModel.answers.count, 5)
+        XCTAssertEqual(viewModel.completionPercentage, 0.5)
+    }
+
+    func testTotalAndAverageScoreCalculation() {
+        for i in 0..<viewModel.questions.count {
+            viewModel.answers[viewModel.questions[i].id] = 3
+        }
+
+        XCTAssertEqual(viewModel.totalScore, 30)
+        XCTAssertEqual(viewModel.averageScore, 3.0)
+        XCTAssertEqual(viewModel.stressLevel, "High Stress")
+        XCTAssertEqual(viewModel.stressLevelBars, 3)
+    }
+
+    func testResetAssessmentClearsState() {
+        viewModel.answers[viewModel.questions[0].id] = 4
+        viewModel.currentQuestionIndex = 5
+        viewModel.shouldNavigateToResult = true
+
+        viewModel.resetAssessment()
+
+        XCTAssertTrue(viewModel.answers.isEmpty)
+        XCTAssertEqual(viewModel.currentQuestionIndex, 0)
+        XCTAssertFalse(viewModel.shouldNavigateToResult)
+    }
+
+    func testCanGoBackAndGoBackFunction() {
+        viewModel.currentQuestionIndex = 3
+        XCTAssertTrue(viewModel.canGoBack())
+
+        viewModel.goBack()
+        XCTAssertEqual(viewModel.currentQuestionIndex, 2)
+
+        viewModel.currentQuestionIndex = 0
+        XCTAssertFalse(viewModel.canGoBack())
+    }
+
+    func testIsAnswerSelected() {
+        let questionID = viewModel.currentQuestion!.id
+        viewModel.answers[questionID] = 2
+        XCTAssertTrue(viewModel.isAnswerSelected(2))
+        XCTAssertFalse(viewModel.isAnswerSelected(3))
     }
 
 }
