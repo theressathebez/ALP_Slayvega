@@ -5,4 +5,5 @@ struct JournalModel: Identifiable {
     var journalTitle: String
     var journalDescription: String
     var journalDate: Date
+    var userId: String
 }

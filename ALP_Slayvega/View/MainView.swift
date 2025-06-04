@@ -29,7 +29,7 @@ struct MainView: View {
                     Text("Dashboard")
                 }
 
-            JournalMainView()
+            JournalMenuView()
                 .tabItem {
                     Label("Journal", systemImage: "book.closed.fill")
                 }

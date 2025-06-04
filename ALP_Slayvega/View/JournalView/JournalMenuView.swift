@@ -7,7 +7,6 @@ struct JournalMenuView: View {
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
-                // Background
                 LinearGradient(
                     gradient: Gradient(colors: [Color.white, Color(.systemGray6)]),
                     startPoint: .top,
@@ -16,7 +15,7 @@ struct JournalMenuView: View {
                 .ignoresSafeArea()
 
                 VStack(spacing: 0) {
-                    // Header greeting card
+                   
                     GreetingsViewCard()
 
                     VStack(alignment: .leading, spacing: 16) {
@@ -48,7 +47,7 @@ struct JournalMenuView: View {
                                     ForEach(viewModel.journals, id: \.id) { entry in
                                         NavigationLink {
                                             JournalDetailView(viewModel: viewModel, journal: entry)
-                                                .toolbar(.hidden, for: .tabBar) // ✅ SEMBUNYIKAN TAB BAR
+                                                .toolbar(.hidden, for: .tabBar)
                                         } label: {
                                             JournalEntryCard(entry: entry)
                                         }

@@ -1,8 +1,3 @@
-
-import Foundation
-import SwiftUI
-
-
 import Foundation
 import SwiftUI
 import FirebaseAuth
@@ -16,21 +11,29 @@ class JournalViewModel: ObservableObject {
     
     private var dbRef = Database.database().reference().child("journals")
     
-    private var userId: String? {
+    private var currentUserId: String? {
         Auth.auth().currentUser?.uid
     }
 
-    // MARK: - Add
+
     func addJournal() {
-        guard let uid = userId else { return }
-        guard !journalTitle.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        guard let uid = currentUserId else {
+            print("Error: User not logged in for addJournal.")
+            return
+        }
+        guard !journalTitle.trimmingCharacters(in: .whitespaces).isEmpty else {
+            print("Error: Journal title is empty.")
+            return
+        }
 
         let journalId = UUID().uuidString
+      
         let newJournal = JournalModel(
             id: journalId,
             journalTitle: journalTitle,
             journalDescription: journalDescription,
-            journalDate: Date()
+            journalDate: Date(),
+            userId: uid
         )
 
         let journalData: [String: Any] = [
@@ -41,18 +44,31 @@ class JournalViewModel: ObservableObject {
             "userId": uid
         ]
 
-        dbRef.child(uid).child(journalId).setValue(journalData)
-
-        journals.append(newJournal)
+        dbRef.child(uid).child(journalId).setValue(journalData) { error, _ in
+            if let error = error {
+                print("Error saving journal to Firebase: \(error.localizedDescription)")
+            } else {
+                print("Journal saved to Firebase successfully.")
+                
+                self.fetchJournals()
+            }
+        }
         clearInput()
     }
 
-    // MARK: - Fetch
-    func fetchJournals() {
-        guard let uid = userId else { return }
+    
+    func fetchJournals(completion: (([JournalModel]) -> Void)? = nil) {
+        guard let uid = currentUserId else {
+            print("Error: User not logged in for fetchJournals.")
+            DispatchQueue.main.async {
+                 self.journals = []
+            }
+            completion?([])
+            return
+        }
 
-        dbRef.child(uid).observeSingleEvent(of: .value) { snapshot in
-            var temp: [JournalModel] = []
+        dbRef.child(uid).observe(.value) { snapshot in
+            var tempJournals: [JournalModel] = []
 
             for case let child as DataSnapshot in snapshot.children {
                 if let data = child.value as? [String: Any] {
@@ -61,69 +77,96 @@ class JournalViewModel: ObservableObject {
                     let desc = data["journalDescription"] as? String ?? ""
                     let time = data["journalDate"] as? TimeInterval ?? Date().timeIntervalSince1970
                     let date = Date(timeIntervalSince1970: time)
+                    let fetchedUserId = data["userId"] as? String ?? uid
 
                     let journal = JournalModel(
                         id: id,
                         journalTitle: title,
                         journalDescription: desc,
-                        journalDate: date
+                        journalDate: date,
+                        userId: fetchedUserId
                     )
-
-                    temp.append(journal)
+                    tempJournals.append(journal)
                 }
             }
 
             DispatchQueue.main.async {
-                self.journals = temp.sorted { $0.journalDate > $1.journalDate }
+                let sortedJournals = tempJournals.sorted { $0.journalDate > $1.journalDate }
+                self.journals = sortedJournals
+                completion?(sortedJournals)
+                print("Journals fetched and updated: \(self.journals.count) items.")
             }
+        } withCancel: { error in
+            print("Error fetching journals with observer: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self.journals = []
+            }
+            completion?([])
         }
+    }
+    
+    func stopObservingJournals() {
+        guard let uid = currentUserId else { return }
+        dbRef.child(uid).removeAllObservers()
+        print("Stopped observing journals for user: \(uid)")
     }
 
     func updateJournal(id: String) {
-        guard let uid = Auth.auth().currentUser?.uid else {
-            print("User not logged in.")
+        guard let uid = currentUserId else {
+            print("User not logged in for updateJournal.")
+            return
+        }
+        
+        guard !journalTitle.trimmingCharacters(in: .whitespaces).isEmpty else {
+            print("Error: Updated journal title is empty.")
             return
         }
 
-        let dbRef = Database.database().reference()
-            .child("journals")
-            .child(uid)
-            .child(id)
+        let journalRef = dbRef.child(uid).child(id)
 
-        let updatedJournal: [String: Any] = [
+        let updatedJournalData: [String: Any] = [
             "id": id,
             "journalTitle": journalTitle,
             "journalDescription": journalDescription,
-            "journalDate": Date().timeIntervalSince1970 * 1000 // Firebase expects milliseconds
+            "journalDate": Date().timeIntervalSince1970,
+            "userId": uid
         ]
 
-        dbRef.updateChildValues(updatedJournal) { error, _ in
+        journalRef.updateChildValues(updatedJournalData) { error, _ in
             if let error = error {
-                print("Error updating journal: \(error.localizedDescription)")
+                print("Error updating journal in Firebase: \(error.localizedDescription)")
             } else {
-                print("Journal successfully updated.")
+                print("Journal successfully updated in Firebase.")
+                if let index = self.journals.firstIndex(where: { $0.id == id }) {
+                    DispatchQueue.main.async {
+                        self.journals[index].journalTitle = self.journalTitle
+                        self.journals[index].journalDescription = self.journalDescription
+                        self.journals[index].journalDate = Date()
+                    }
+                }
+                self.clearInput()
             }
         }
+    }
 
-        // Optional: Perbarui lokal juga
-        if let index = journals.firstIndex(where: { $0.id == id }) {
-            journals[index].journalTitle = journalTitle
-            journals[index].journalDescription = journalDescription
-            journals[index].journalDate = Date()
+    func deleteJournal(id: String) {
+        guard let uid = currentUserId else {
+            print("User not logged in for deleteJournal.")
+            return
         }
 
-        clearInput()
+        dbRef.child(uid).child(id).removeValue { error, _ in
+            if let error = error {
+                print("Error deleting journal from Firebase: \(error.localizedDescription)")
+            } else {
+                print("Journal successfully deleted from Firebase.")
+                DispatchQueue.main.async {
+                    self.journals.removeAll { $0.id == id }
+                }
+            }
+        }
     }
 
-    // MARK: - Delete
-    func deleteJournal(id: String) {
-        guard let uid = userId else { return }
-
-        dbRef.child(uid).child(id).removeValue()
-        journals.removeAll { $0.id == id }
-    }
-
-    // MARK: - Helpers
     func loadJournalToEdit(_ journal: JournalModel) {
         journalTitle = journal.journalTitle
         journalDescription = journal.journalDescription
@@ -133,50 +176,8 @@ class JournalViewModel: ObservableObject {
         journalTitle = ""
         journalDescription = ""
     }
+    
+    deinit {
+        stopObservingJournals()
+    }
 }
-
-
-//class JournalViewModel: ObservableObject {
-//    
-//    @Published var journalTitle: String = ""
-//    @Published var journalDescription: String = ""
-//  
-//    @Published var journals: [JournalModel] = []
-//    
-//
-//    func addJournal() {
-//        let newJournal = JournalModel(
-//            journalTitle: journalTitle,
-//            journalDescription: journalDescription,
-//            journalDate: Date()
-//        )
-//        journals.append(newJournal)
-//        clearInput()
-//    }
-//    
-//
-//    func updateJournal(id: String) {
-//        if let index = journals.firstIndex(where: { $0.id == id }) {
-//            journals[index].journalTitle = journalTitle
-//            journals[index].journalDescription = journalDescription
-//            journals[index].journalDate = Date()
-//            clearInput()
-//        }
-//    }
-//    
-//   
-//    func deleteJournal(id: String) {
-//        journals.removeAll { $0.id == id }
-//    }
-//   
-//    func loadJournalToEdit(_ journal: JournalModel) {
-//        journalTitle = journal.journalTitle
-//        journalDescription = journal.journalDescription
-//    }
-//    
-//
-//    func clearInput() {
-//        journalTitle = ""
-//        journalDescription = ""
-//    }
-//}
