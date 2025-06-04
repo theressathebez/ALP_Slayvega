@@ -1,10 +1,4 @@
-//
-//  ALP_SlayvegaApp.swift
-//  ALP_Slayvega
-//
-//  Created by student on 22/05/25.
-//
-
+// ALP_Slayvega/ALP_SlayvegaApp.swift
 import SwiftUI
 import Firebase
 import FirebaseAppCheck
@@ -14,13 +8,17 @@ struct ALP_SlayvegaApp: App {
     @StateObject var authViewModel = AuthViewModel()
     @StateObject var quotesVM = QuotesViewModel()
     @StateObject var communityVM = CommunityViewModel()
-    
-    init(){
+    @StateObject var iosConnectivity = iOSConnectivity.shared // Initialize the shared instance
+
+    init() {
         FirebaseApp.configure()
         #if DEBUG
         let providerFactory = AppCheckDebugProviderFactory()
         AppCheck.setAppCheckProviderFactory(providerFactory)
         #endif
+        // The iOSConnectivity.shared is already initialized by now.
+        // You can call methods on it if needed, e.g., iosConnectivity.manualSyncWithWatch()
+        // but it should activate itself.
     }
     
     var body: some Scene {
@@ -29,6 +27,7 @@ struct ALP_SlayvegaApp: App {
                 .environmentObject(authViewModel)
                 .environmentObject(quotesVM)
                 .environmentObject(communityVM)
+                .environmentObject(iosConnectivity) // Optional: if views need to observe it
         }
     }
 }
