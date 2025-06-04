@@ -9,24 +9,15 @@ import SwiftUI
 
 struct StressQuestionView: View {
     @StateObject private var viewModel = StressQuestionViewModel()
-    @State private var currentQuestionIndex = 0
-    @State private var navigateToResult = false
     @Environment(\.presentationMode) var presentationMode
-
-    let choices = [
-        (text: "Strongly Agree", emoji: "😊", value: 4),
-        (text: "Agree", emoji: "😐", value: 3),
-        (text: "Disagree", emoji: "😕", value: 2),
-        (text: "Strongly Disagree", emoji: "😞", value: 1),
-    ]
 
     var body: some View {
         VStack(spacing: 0) {
             // Navigation Bar
             HStack {
                 Button(action: {
-                    if currentQuestionIndex > 0 {
-                        currentQuestionIndex -= 1
+                    if viewModel.canGoBack() {
+                        viewModel.goBack()
                     } else {
                         presentationMode.wrappedValue.dismiss()
                     }
@@ -52,12 +43,14 @@ struct StressQuestionView: View {
             .padding(.horizontal, 20)
             .padding(.top, 10)
 
-            // Progress indicator (optional)
+            // Progress indicator
             HStack {
-                ForEach(0..<viewModel.questions.count, id: \.self) { index in
+                ForEach(
+                    Array(viewModel.progressBarData.enumerated()), id: \.offset
+                ) { index, isActive in
                     Rectangle()
                         .fill(
-                            index <= currentQuestionIndex
+                            isActive
                                 ? Color(red: 1.0, green: 0.56, blue: 0.427)
                                 : Color.gray.opacity(0.3)
                         )
@@ -69,7 +62,7 @@ struct StressQuestionView: View {
 
             Spacer()
 
-            if currentQuestionIndex < viewModel.questions.count {
+            if let currentQuestion = viewModel.currentQuestion {
                 // Question Content
                 VStack(spacing: 40) {
                     VStack(spacing: 20) {
@@ -81,21 +74,19 @@ struct StressQuestionView: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 30)
 
-                        Text(
-                            "\(viewModel.questions[currentQuestionIndex].questionText)"
-                        )
-                        .font(.title2)
-                        .fontWeight(.medium)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 30)
-                        .foregroundColor(.primary)
+                        Text(currentQuestion.questionText)
+                            .font(.title2)
+                            .fontWeight(.medium)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 30)
+                            .foregroundColor(.primary)
                     }
 
                     // Answer Options
                     VStack(spacing: 15) {
-                        ForEach(choices, id: \.value) { choice in
+                        ForEach(viewModel.choices, id: \.value) { choice in
                             Button(action: {
-                                selectAnswer(choice.value)
+                                viewModel.selectAnswer(choice.value)
                             }) {
                                 HStack {
                                     Text(choice.emoji)
@@ -110,13 +101,13 @@ struct StressQuestionView: View {
                                 .padding(.horizontal, 25)
                                 .padding(.vertical, 18)
                                 .background(
-                                    isAnswerSelected(choice.value)
+                                    viewModel.isAnswerSelected(choice.value)
                                         ? Color(
                                             red: 1.0, green: 0.56, blue: 0.427)
                                         : Color(.systemGray6)
                                 )
                                 .foregroundColor(
-                                    isAnswerSelected(choice.value)
+                                    viewModel.isAnswerSelected(choice.value)
                                         ? .white
                                         : .primary
                                 )
@@ -130,12 +121,15 @@ struct StressQuestionView: View {
 
             Spacer()
 
-            // Bottom indicator (optional page dots)
+            // Bottom indicator (page dots)
             HStack(spacing: 8) {
-                ForEach(0..<viewModel.questions.count, id: \.self) { index in
+                ForEach(
+                    Array(viewModel.pageIndicatorData.enumerated()),
+                    id: \.offset
+                ) { index, isActive in
                     Circle()
                         .fill(
-                            index == currentQuestionIndex
+                            isActive
                                 ? Color.primary : Color.gray.opacity(0.3)
                         )
                         .frame(width: 8, height: 8)
@@ -148,38 +142,13 @@ struct StressQuestionView: View {
         .background(
             NavigationLink(
                 destination: StressResultView(
-                    viewModel: viewModel,
-                    mindfulnessViewModel: MindfulnessViewModel()
+                    viewModel: viewModel
                 ),
-                isActive: $navigateToResult
+                isActive: $viewModel.shouldNavigateToResult
             ) {
                 EmptyView()
             }
         )
-
-    }
-
-    private func isAnswerSelected(_ value: Int) -> Bool {
-        guard currentQuestionIndex < viewModel.questions.count else {
-            return false
-        }
-        let questionId = viewModel.questions[currentQuestionIndex].id
-        return viewModel.answers[questionId] == value
-    }
-
-    private func selectAnswer(_ value: Int) {
-        let questionId = viewModel.questions[currentQuestionIndex].id
-        viewModel.answers[questionId] = value
-
-        // Auto-advance to next question after a short delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            if currentQuestionIndex < viewModel.questions.count - 1 {
-                currentQuestionIndex += 1
-            } else {
-                // All questions answered, show result
-                navigateToResult = true
-            }
-        }
     }
 }
 

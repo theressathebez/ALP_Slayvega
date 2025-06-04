@@ -10,12 +10,7 @@ import SwiftUI
 
 struct StressResultView: View {
     @ObservedObject var viewModel: StressQuestionViewModel
-    @ObservedObject var mindfulnessViewModel: MindfulnessViewModel
     @Environment(\.dismiss) var dismiss
-    @State private var navigateToHome = false
-    @State private var showAlert = false
-    @State private var alertMessage = ""
-    @State private var isSaving = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -95,10 +90,10 @@ struct StressResultView: View {
 
             // Continue Button
             Button(action: {
-                saveStressResult()
+                viewModel.handleSaveStressResult()
             }) {
                 HStack {
-                    if isSaving {
+                    if viewModel.isSaving {
                         ProgressView()
                             .progressViewStyle(
                                 CircularProgressViewStyle(tint: .white)
@@ -112,57 +107,24 @@ struct StressResultView: View {
                 .fontWeight(.semibold)
                 .frame(maxWidth: .infinity)
                 .frame(height: 60)
-                .background(isSaving ? Color.gray : Color.orange)
+                .background(viewModel.isSaving ? Color.gray : Color.orange)
                 .foregroundColor(.white)
                 .cornerRadius(30)
                 .padding(.horizontal, 30)
             }
-            .disabled(isSaving)
+            .disabled(viewModel.isSaving)
             .padding(.bottom, 50)
         }
         .navigationBarHidden(true)
         .background(Color(.systemBackground).ignoresSafeArea())
-        .alert("Error", isPresented: $showAlert) {
+        .alert("Error", isPresented: $viewModel.shouldShowAlert) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(alertMessage)
+            Text(viewModel.alertMessage)
         }
-        .navigationDestination(isPresented: $navigateToHome) {
+        .navigationDestination(isPresented: $viewModel.shouldNavigateToHome) {
             HomeView()
                 .navigationBarBackButtonHidden(true)
-        }
-    }
-
-    private func saveStressResult() {
-        guard let userId = Auth.auth().currentUser?.uid else {
-            alertMessage = "No user logged in"
-            showAlert = true
-            return
-        }
-
-        isSaving = true
-
-        Task {
-            // Save through the view model's async method
-            await viewModel.saveStressResult()
-
-            // Also save through mindfulness view model for compatibility
-            mindfulnessViewModel.saveStressResult(
-                stressLevel: Int(viewModel.averageScore * 10),
-                userId: userId
-            )
-
-            await MainActor.run {
-                isSaving = false
-
-                if let errorMessage = viewModel.errorMessage {
-                    alertMessage = errorMessage
-                    showAlert = true
-                } else {
-                    // Success - navigate to home
-                    navigateToHome = true
-                }
-            }
         }
     }
 }
@@ -177,12 +139,9 @@ struct StressResultView: View {
         stressVM.questions[4].id: 3,
     ]
 
-    let mindfulnessVM = MindfulnessViewModel()
-
     return NavigationView {
         StressResultView(
-            viewModel: stressVM,
-            mindfulnessViewModel: mindfulnessVM
+            viewModel: stressVM
         )
     }
 }
