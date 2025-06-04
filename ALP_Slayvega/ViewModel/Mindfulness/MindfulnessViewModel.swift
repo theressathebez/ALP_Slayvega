@@ -15,34 +15,6 @@ class MindfulnessViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
-    @Published var items: [MindfulnessModel] = [
-        MindfulnessModel(
-            iconName: "scope",
-            title: "How Stressed Are You?",
-            description: "Prepare yourself and get into position."
-        ),
-        MindfulnessModel(
-            iconName: "wind",
-            title: "Breathe Out",
-            description: "Breathe in slowly and deeply."
-        ),
-        MindfulnessModel(
-            iconName: "lungs.fill",
-            title: "Social Chameleon",
-            description: "Breathe out gently and relax."
-        ),
-    ]
-
-    func filteredItems(by searchText: String) -> [MindfulnessModel] {
-        if searchText.isEmpty {
-            return items
-        } else {
-            return items.filter {
-                $0.title.lowercased().contains(searchText.lowercased())
-            }
-        }
-    }
-
     func saveStressResult(stressLevel: Int, userId: String) {
         isLoading = true
         errorMessage = nil
@@ -80,7 +52,6 @@ class MindfulnessViewModel: ObservableObject {
             snapshot in
             var stressResults: [StressModel] = []
 
-            // Loop melalui seluruh data anak
             for case let child as DataSnapshot in snapshot.children {
                 if let data = child.value as? [String: Any],
                     let uid = data["userId"] as? String,

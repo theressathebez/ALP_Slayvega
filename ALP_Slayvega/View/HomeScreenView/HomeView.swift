@@ -97,3 +97,10 @@ struct HomeView: View {
         }
     }
 }
+
+#Preview {
+    HomeView()
+        .environmentObject(AuthViewModel())
+        .environmentObject(QuotesViewModel())
+        .environmentObject(CommunityViewModel())
+}

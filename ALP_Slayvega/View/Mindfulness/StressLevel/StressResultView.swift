@@ -12,7 +12,10 @@ struct StressResultView: View {
     @ObservedObject var viewModel: StressQuestionViewModel
     @ObservedObject var mindfulnessViewModel: MindfulnessViewModel
     @Environment(\.dismiss) var dismiss
-    @State private var navigateToMindfulness = false
+    @State private var navigateToHome = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    @State private var isSaving = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -91,32 +94,76 @@ struct StressResultView: View {
             Spacer()
 
             // Continue Button
-            NavigationLink(
-                destination: MindfulnessView(),
-                isActive: $navigateToMindfulness
-            ) {
-                Button(action: {
-                    mindfulnessViewModel.saveStressResult(
-                        stressLevel: Int(viewModel.averageScore),
-                        userId: Auth.auth().currentUser?.uid ?? "unknown_user"
-                    )
-
-                    navigateToMindfulness = true
-                }) {
-                    Text("Continue")
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 60)
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(30)
-                        .padding(.horizontal, 30)
+            Button(action: {
+                saveStressResult()
+            }) {
+                HStack {
+                    if isSaving {
+                        ProgressView()
+                            .progressViewStyle(
+                                CircularProgressViewStyle(tint: .white)
+                            )
+                            .scaleEffect(0.8)
+                        Text("Saving...")
+                    } else {
+                        Text("Continue")
+                    }
                 }
-                .padding(.bottom, 50)
+                .fontWeight(.semibold)
+                .frame(maxWidth: .infinity)
+                .frame(height: 60)
+                .background(isSaving ? Color.gray : Color.orange)
+                .foregroundColor(.white)
+                .cornerRadius(30)
+                .padding(.horizontal, 30)
             }
+            .disabled(isSaving)
+            .padding(.bottom, 50)
         }
         .navigationBarHidden(true)
         .background(Color(.systemBackground).ignoresSafeArea())
+        .alert("Error", isPresented: $showAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
+        }
+        .navigationDestination(isPresented: $navigateToHome) {
+            HomeView()
+                .navigationBarBackButtonHidden(true)
+        }
+    }
+
+    private func saveStressResult() {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            alertMessage = "No user logged in"
+            showAlert = true
+            return
+        }
+
+        isSaving = true
+
+        Task {
+            // Save through the view model's async method
+            await viewModel.saveStressResult()
+
+            // Also save through mindfulness view model for compatibility
+            mindfulnessViewModel.saveStressResult(
+                stressLevel: Int(viewModel.averageScore * 10),
+                userId: userId
+            )
+
+            await MainActor.run {
+                isSaving = false
+
+                if let errorMessage = viewModel.errorMessage {
+                    alertMessage = errorMessage
+                    showAlert = true
+                } else {
+                    // Success - navigate to home
+                    navigateToHome = true
+                }
+            }
+        }
     }
 }
 
@@ -132,8 +179,10 @@ struct StressResultView: View {
 
     let mindfulnessVM = MindfulnessViewModel()
 
-    return StressResultView(
-        viewModel: stressVM,
-        mindfulnessViewModel: mindfulnessVM
-    )
+    return NavigationView {
+        StressResultView(
+            viewModel: stressVM,
+            mindfulnessViewModel: mindfulnessVM
+        )
+    }
 }
