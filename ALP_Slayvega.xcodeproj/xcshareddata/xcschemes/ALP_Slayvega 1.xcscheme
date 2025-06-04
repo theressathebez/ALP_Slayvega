@@ -15,20 +15,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F8222542DEED93800D6822B"
-               BuildableName = "WatchSlayvega Watch App.app"
-               BlueprintName = "WatchSlayvega Watch App"
-               ReferencedContainer = "container:ALP_Slayvega.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "3FBD548F2DDEBD2900332EA1"
                BuildableName = "ALP_Slayvega.app"
                BlueprintName = "ALP_Slayvega"
@@ -43,30 +29,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F8222602DEED93900D6822B"
-               BuildableName = "WatchSlayvega Watch AppTests.xctest"
-               BlueprintName = "WatchSlayvega Watch AppTests"
-               ReferencedContainer = "container:ALP_Slayvega.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F82226A2DEED93900D6822B"
-               BuildableName = "WatchSlayvega Watch AppUITests.xctest"
-               BlueprintName = "WatchSlayvega Watch AppUITests"
-               ReferencedContainer = "container:ALP_Slayvega.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -82,9 +44,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3F8222542DEED93800D6822B"
-            BuildableName = "WatchSlayvega Watch App.app"
-            BlueprintName = "WatchSlayvega Watch App"
+            BlueprintIdentifier = "3FBD548F2DDEBD2900332EA1"
+            BuildableName = "ALP_Slayvega.app"
+            BlueprintName = "ALP_Slayvega"
             ReferencedContainer = "container:ALP_Slayvega.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -99,9 +61,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3F8222542DEED93800D6822B"
-            BuildableName = "WatchSlayvega Watch App.app"
-            BlueprintName = "WatchSlayvega Watch App"
+            BlueprintIdentifier = "3FBD548F2DDEBD2900332EA1"
+            BuildableName = "ALP_Slayvega.app"
+            BlueprintName = "ALP_Slayvega"
             ReferencedContainer = "container:ALP_Slayvega.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

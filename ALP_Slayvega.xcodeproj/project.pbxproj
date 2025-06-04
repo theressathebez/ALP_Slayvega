@@ -13,6 +13,8 @@
 		3F459F842DE5783E00DED8EF /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3F459F832DE5783E00DED8EF /* FirebaseCore */; };
 		3F459F862DE5783E00DED8EF /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 3F459F852DE5783E00DED8EF /* FirebaseDatabase */; };
 		3F8222752DEED93900D6822B /* WatchSlayvega Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 3F8222552DEED93800D6822B /* WatchSlayvega Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3FCDE11F2DF024090094112F /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FCDE11E2DF024090094112F /* WatchConnectivity.framework */; };
+		3FCDE1212DF0241C0094112F /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FCDE1202DF0241C0094112F /* WatchConnectivity.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +76,8 @@
 		3FBD54902DDEBD2900332EA1 /* ALP_Slayvega.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALP_Slayvega.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FBD549D2DDEBD2B00332EA1 /* ALP_SlayvegaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ALP_SlayvegaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FBD54A72DDEBD2B00332EA1 /* ALP_SlayvegaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ALP_SlayvegaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3FCDE11E2DF024090094112F /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS11.4.sdk/System/Library/Frameworks/WatchConnectivity.framework; sourceTree = DEVELOPER_DIR; };
+		3FCDE1202DF0241C0094112F /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -81,6 +85,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Model/CommentModel.swift,
+				Model/CommunityModel.swift,
 			);
 			target = 3F8222542DEED93800D6822B /* WatchSlayvega Watch App */;
 		};
@@ -127,6 +132,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FCDE11F2DF024090094112F /* WatchConnectivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,6 +159,7 @@
 				3F459F822DE5783E00DED8EF /* FirebaseAuth in Frameworks */,
 				3F459F842DE5783E00DED8EF /* FirebaseCore in Frameworks */,
 				3F459F7E2DE5783E00DED8EF /* FirebaseAnalytics in Frameworks */,
+				3FCDE1212DF0241C0094112F /* WatchConnectivity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,6 +189,7 @@
 				3F8222562DEED93800D6822B /* WatchSlayvega Watch App */,
 				3F8222642DEED93900D6822B /* WatchSlayvega Watch AppTests */,
 				3F82226E2DEED93900D6822B /* WatchSlayvega Watch AppUITests */,
+				3FCDE11D2DF024090094112F /* Frameworks */,
 				3FBD54912DDEBD2900332EA1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -197,6 +205,15 @@
 				3F82226B2DEED93900D6822B /* WatchSlayvega Watch AppUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		3FCDE11D2DF024090094112F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3FCDE1202DF0241C0094112F /* WatchConnectivity.framework */,
+				3FCDE11E2DF024090094112F /* WatchConnectivity.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
