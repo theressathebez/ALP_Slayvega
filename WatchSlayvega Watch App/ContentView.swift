@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         TabView {
-            WatchCommunityView()
+            WatchCommunityReadView()
                 .tabItem {
                     Image(systemName: "bubble.left.and.bubble.right")
                     Text("Community")
@@ -47,7 +47,6 @@ struct WatchStatusView: View {
                     Text("\(connectivity.communities.count) Posts")
                         .font(.caption2)
                     
-                    Text("\(connectivity.comments.count) Comments")
                         .font(.caption2)
                 }
                 .foregroundColor(.secondary)
