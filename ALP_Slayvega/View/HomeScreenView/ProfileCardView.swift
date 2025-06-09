@@ -11,7 +11,7 @@ struct ProfileCardView: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             HStack(spacing: 16) {
-                // ✅ Avatar (bisa diklik untuk ke Profile)
+               
                 Button(action: {
                     goToProfile = true
                 }) {
@@ -19,7 +19,7 @@ struct ProfileCardView: View {
                         .fill(Color.fromHex("#FFA075").opacity(0.3))
                         .frame(width: 60, height: 60)
                         .overlay(
-                            Image("sampleProfile") // ganti sesuai image atau pakai Text initial
+                            Image("sampleProfile")
                                 .resizable()
                                 .scaledToFit()
                                 .clipShape(Circle())
@@ -27,7 +27,7 @@ struct ProfileCardView: View {
                         )
                 }
 
-                // ✅ Text: Welcome, Leon Smith
+
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Welcome,")
                         .font(.system(size: 16))
@@ -39,23 +39,6 @@ struct ProfileCardView: View {
                 }
 
                 Spacer()
-            }
-            .padding(.trailing, 48)
-            ZStack(alignment: .topTrailing) {
-                Image(systemName: "bell.fill")
-                    .font(.system(size: 22))
-                    .foregroundColor(Color.fromHex("#2C2C45"))
-                    .padding(.top, 4)
-                    .padding(.trailing, 8)
-
-                if notificationCount > 0 {
-                    Text("\(notificationCount)")
-                        .font(.caption2)
-                        .foregroundColor(.white)
-                        .padding(5)
-                        .background(Circle().fill(Color.fromHex("#FF8F6D")))
-                        .offset(x: 4, y: -4)
-                }
             }
 
             NavigationLink(

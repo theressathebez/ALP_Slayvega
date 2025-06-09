@@ -13,6 +13,7 @@ class AuthViewModel: ObservableObject {
     @Published var user: User?
     @Published var myUser: MyUser
     @Published var falseCredential: Bool
+    @Published var didCheckAuth = false
 
     init() {
         self.user = nil
@@ -33,6 +34,7 @@ class AuthViewModel: ObservableObject {
             }
             self.myUser.uid = currentUser.uid
         }
+        self.didCheckAuth = true
     }
 
     func signOut() {

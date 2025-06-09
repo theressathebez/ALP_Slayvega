@@ -18,11 +18,13 @@ struct MainView: View {
                     Image(systemName: "person.3.fill")
                     Text("Shares")
                 }
+           
             
             StartPageView()
                 .tabItem {
                     Label("Mindfulness", systemImage: "brain.head.profile")
                 }
+            
             HomeView()
                 .tabItem {
                     Image(systemName: "house.fill")
@@ -34,6 +36,7 @@ struct MainView: View {
                     Label("Journal", systemImage: "book.closed.fill")
                 }
         }
+        .accentColor(Color.fromHex("FF8F6D"))
         .onAppear {
             showAuthSheet = !authViewModel.isSignedIn
         }

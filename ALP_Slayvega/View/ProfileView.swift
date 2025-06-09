@@ -106,7 +106,6 @@ struct ProfileView: View {
                             }
                             .padding(.horizontal)
                         } else {
-                            // Edit Profile button
                             Button("Edit Profile") {
                                 startEditing()
                             }
