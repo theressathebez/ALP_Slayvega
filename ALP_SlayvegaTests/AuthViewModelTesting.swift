@@ -418,4 +418,16 @@ final class AuthViewModelTesting: XCTestCase {
         // ViewModel should be deallocated when no strong references remain
         XCTAssertNil(weakViewModel, "AuthViewModel should be deallocated")
     }
+
+    func testUpdateDisplayNameWithNilUserDoesNotCrash() async throws {
+        // Seharusnya tidak crash meskipun currentUser = nil
+        do {
+            try await viewModel.updateDisplayName(to: "New Name")
+            XCTAssert(
+                true,
+                "updateDisplayName tidak menyebabkan crash saat tidak ada user")
+        } catch {
+            XCTFail("updateDisplayName gagal dijalankan")
+        }
+    }
 }

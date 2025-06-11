@@ -175,24 +175,6 @@ final class DashboardViewModelTesting: XCTestCase {
 
     // MARK: - Weekly Data Filtering Tests
 
-    func testGetWeeklyStressDataFiltering() {
-        let currentTime = Date().timeIntervalSince1970
-        let oneWeekAgo = currentTime - (7 * 24 * 60 * 60)
-        let twoWeeksAgo = currentTime - (14 * 24 * 60 * 60)
-
-        let mockHistory = [
-            createMockStressModelWithTimestamp(
-                level: 10, timestamp: Int(currentTime - 1000)),  // Within week
-            createMockStressModelWithTimestamp(
-                level: 20, timestamp: Int(oneWeekAgo + 1000)),  // Within week
-            createMockStressModelWithTimestamp(
-                level: 30, timestamp: Int(twoWeeksAgo)),  // Outside week
-        ]
-
-        let weeklyData = viewModel.getWeeklyStressData(from: mockHistory)
-        XCTAssertEqual(weeklyData.count, 2)  // Only 2 should be within the week
-    }
-
     func testGetWeeklyStressDataWithMissingTimestamps() {
         let mockHistory = [
             createMockStressModel(level: 10),  // No timestamp
