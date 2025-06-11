@@ -21,6 +21,20 @@
                ReferencedContainer = "container:ALP_Slayvega.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3F8222542DEED93800D6822B"
+               BuildableName = "WatchSlayvega Watch App.app"
+               BlueprintName = "WatchSlayvega Watch App"
+               ReferencedContainer = "container:ALP_Slayvega.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
