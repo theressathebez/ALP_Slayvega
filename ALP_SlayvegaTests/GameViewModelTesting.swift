@@ -178,7 +178,6 @@ final class GameViewModelTesting: XCTestCase {
         viewModel.$currentPhase
             .dropFirst()
             .sink { phase in
-                // This will be called when phase changes
                 expectation.fulfill()
             }
             .store(in: &cancellables)
@@ -197,8 +196,6 @@ final class GameViewModelTesting: XCTestCase {
         // Manually set start time to test progress calculation
         viewModel.gameState.gameStartTime = Date().addingTimeInterval(-30)  // 30 seconds ago
 
-        // The actual progress update happens in private methods,
-        // so we test the initial state and structure
         XCTAssertEqual(viewModel.gameState.progress, 0.0)
     }
 
@@ -243,10 +240,8 @@ final class GameViewModelTesting: XCTestCase {
         let firstCallSet = viewModel.currentSet
         let firstCallPhase = viewModel.currentPhase
 
-        // Call start again
         viewModel.startBreathing()
 
-        // Should remain unchanged
         XCTAssertEqual(viewModel.currentSet, firstCallSet)
         XCTAssertEqual(viewModel.currentPhase, firstCallPhase)
     }
@@ -274,8 +269,6 @@ final class GameViewModelTesting: XCTestCase {
             testViewModel.resetBreathing()
         }
 
-        // Note: This test might not always pass due to timer references
-        // It's more of a guidance for memory leak detection
         XCTAssertNil(
             weakViewModel,
             "GameViewModel should be deallocated when no strong references remain"

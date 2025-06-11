@@ -41,7 +41,6 @@ final class CommunityViewModelTesting: XCTestCase {
     // MARK: - Clear Local Data Tests
 
     func testClearLocalDataRemovesAllCommunities() {
-        // Setup: Add some mock communities
         let mockCommunity1 = CommunityModel(
             id: "test-id-1",
             username: "testuser1",

@@ -85,10 +85,8 @@ final class CommentViewModelTesting: XCTestCase {
         XCTAssertEqual(viewModel.comments.count, 1)
         XCTAssertEqual(viewModel.userLikes.count, 1)
 
-        // Execute
         viewModel.clearComments()
 
-        // Verify
         XCTAssertTrue(viewModel.comments.isEmpty)
         XCTAssertTrue(viewModel.userLikes.isEmpty)
     }

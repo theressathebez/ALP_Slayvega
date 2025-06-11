@@ -42,7 +42,6 @@ final class DashboardViewModelTesting: XCTestCase {
     }
 
     func testStressDistributionWithMixedData() {
-        // Create mock stress data with different levels
         let mockData = [
             createMockStressModel(level: 40),  // High (4.0)
             createMockStressModel(level: 35),  // High (3.5)
@@ -198,7 +197,7 @@ final class DashboardViewModelTesting: XCTestCase {
     func testLoadStressDataWithValidUserId() {
         viewModel.isLoading = false
         viewModel.loadStressData(for: "validUserId")
-        XCTAssertTrue(viewModel.isLoading)  // Should set loading to true
+        XCTAssertTrue(viewModel.isLoading)
     }
 
     // MARK: - Helper Methods
@@ -222,7 +221,6 @@ final class DashboardViewModelTesting: XCTestCase {
     // MARK: - Performance Tests
 
     func testStressDistributionPerformance() throws {
-        // Create large dataset
         var largeDataset: [StressModel] = []
         for i in 0..<1000 {
             largeDataset.append(createMockStressModel(level: i % 40 + 1))
@@ -236,7 +234,6 @@ final class DashboardViewModelTesting: XCTestCase {
     }
 
     func testWeeklyStatsCalculationPerformance() throws {
-        // Create large dataset
         var largeDataset: [StressModel] = []
         for i in 0..<1000 {
             largeDataset.append(createMockStressModel(level: i % 40 + 1))
