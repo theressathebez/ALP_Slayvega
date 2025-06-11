@@ -12,7 +12,7 @@ struct WatchCommunityModel: Identifiable, Hashable, Codable { //
     let formattedDate: String
     let userId: String
 }
-
+ 
 class WatchConnectivity: NSObject, WCSessionDelegate, ObservableObject {
     var session: WCSession
     private var retryTimer: Timer?

@@ -33,7 +33,6 @@ final class StressQuestionViewModelTesting: XCTestCase {
         let firstQuestionID = viewModel.currentQuestion?.id
         viewModel.selectAnswer(3)
 
-        // Tunggu 0.6 detik agar async dispatch selesai
         let expectation = XCTestExpectation(
             description: "Wait for index update")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
