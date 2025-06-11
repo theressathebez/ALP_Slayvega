@@ -118,12 +118,14 @@ struct StressResultView: View {
         .navigationBarHidden(true)
         .background(Color(.systemBackground).ignoresSafeArea())
         .alert("Error", isPresented: $viewModel.shouldShowAlert) {
-            Button("OK", role: .cancel) {}
+            Button("OK", role: .cancel) {
+                viewModel.shouldShowAlert = false
+            }
         } message: {
             Text(viewModel.alertMessage)
         }
         .navigationDestination(isPresented: $viewModel.shouldNavigateToHome) {
-            HomeView()
+            MainView()
                 .navigationBarBackButtonHidden(true)
         }
     }

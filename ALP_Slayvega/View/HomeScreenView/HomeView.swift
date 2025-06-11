@@ -61,9 +61,12 @@ struct HomeView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 12) {
                             ForEach(topShares.indices, id: \.self) { index in
-                                SharesCardView(community: topShares[index], commentCount: 33)
-                                    .environmentObject(authVM)
-                                    .padding(.leading, index == 0 ? 20 : 0)
+                                SharesCardView(
+                                    community: topShares[index],
+                                    commentCount: 33
+                                )
+                                .environmentObject(authVM)
+                                .padding(.leading, index == 0 ? 20 : 0)
                             }
                         }
                         .padding(.trailing, 10)
@@ -84,6 +87,8 @@ struct HomeView: View {
                     Spacer(minLength: 40)
                 }
                 .padding(.top, 16)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(.systemBackground))
             }
             .onAppear {
                 if authVM.myUser.name.isEmpty {

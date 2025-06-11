@@ -86,6 +86,10 @@ class AuthViewModel: ObservableObject {
                 password: myUser.password
             )
 
+            let changeRequest = result.user.createProfileChangeRequest()
+            changeRequest.displayName = myUser.name
+            try await changeRequest.commitChanges()
+
             await MainActor.run {
                 self.user = result.user
                 self.myUser.uid = result.user.uid
@@ -112,4 +116,16 @@ class AuthViewModel: ObservableObject {
         self.myUser.name = currentUser.displayName ?? ""
     }
 
+    func updateDisplayName(to newName: String) async throws {
+        guard let user = Auth.auth().currentUser else { return }
+
+        let changeRequest = user.createProfileChangeRequest()
+        changeRequest.displayName = newName
+        try await changeRequest.commitChanges()
+
+        await MainActor.run {
+            self.myUser.name = newName
+            self.user = user
+        }
+    }
 }

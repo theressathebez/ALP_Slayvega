@@ -38,8 +38,8 @@ struct MainView: View {
                         Label("Journal", systemImage: "book.closed.fill")
                     }
             }
+            .background(Color(.systemBackground))
         } else {
-            // Show login/register view when user is not signed in
             LoginRegisterView()
         }
     }

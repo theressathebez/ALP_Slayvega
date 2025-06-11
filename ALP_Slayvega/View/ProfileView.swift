@@ -21,6 +21,8 @@ struct ProfileView: View {
     @State private var alertMessage = ""
     @State private var alertTitle = ""
     @State private var isLoading = false
+    @Binding var isPresented: Bool
+
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -167,14 +169,22 @@ struct ProfileView: View {
             }
             .alert(alertTitle, isPresented: $showingAlert) {
                 Button("OK") {
-                    print("OK tapped")
-
                     showingAlert = false
+
+                    if alertTitle == "Success" {
+                        isPresented = false
+                        clearFields()
+                    }
                 }
             } message: {
                 Text(alertMessage)
             }
         }
+    }
+    private func clearFields() {
+        currentPassword = ""
+        newPassword = ""
+        confirmPassword = ""
     }
 
     private func initializeValues() {
@@ -202,7 +212,6 @@ struct ProfileView: View {
 
     private func saveChanges() {
         isLoading = true
-
         let trimmedName = tempName.trimmingCharacters(
             in: .whitespacesAndNewlines)
 
@@ -212,21 +221,31 @@ struct ProfileView: View {
             return
         }
 
-        authVM.myUser.name = trimmedName
+        Task {
+            do {
+                try await authVM.updateDisplayName(to: trimmedName)
 
-        let currentEmail =
-            authVM.myUser.email.isEmpty
-            ? authVM.user?.email ?? ""
-            : authVM.myUser.email
+                let currentEmail =
+                    authVM.myUser.email.isEmpty
+                    ? authVM.user?.email ?? ""
+                    : authVM.myUser.email
 
-        // Email changed
-        if tempEmail != currentEmail {
-            updateEmail()
-        } else {
-            isEditing = false
-            isLoading = false
-            showAlert(
-                title: "Success", message: "Profile updated successfully!")
+                if tempEmail != currentEmail {
+                    updateEmail()
+                } else {
+                    isEditing = false
+                    isLoading = false
+                    showAlert(
+                        title: "Success",
+                        message: "Profile updated successfully!")
+                }
+            } catch {
+                isLoading = false
+                showAlert(
+                    title: "Error",
+                    message:
+                        "Failed to update name: \(error.localizedDescription)")
+            }
         }
     }
 

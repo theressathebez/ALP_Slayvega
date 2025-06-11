@@ -18,7 +18,7 @@ struct ProfileCardView: View {
                         .fill(Color.fromHex("#FFA075").opacity(0.3))
                         .frame(width: 60, height: 60)
                         .overlay(
-                            Image("Image")  
+                            Image("Image")
                                 .resizable()
                                 .scaledToFit()
                                 .clipShape(Circle())
@@ -54,11 +54,13 @@ struct ProfileCardView: View {
                         .background(Circle().fill(Color.fromHex("#FF8F6D")))
                         .offset(x: 4, y: -4)
                 }
-            }
+            }.padding()
 
             NavigationLink(
                 destination: ProfileView(
-                    showAuthSheet: $showAuthSheet, authVM: authVM),
+                    showAuthSheet: $showAuthSheet, authVM: authVM,
+                    isPresented: .constant(false)
+                ),
                 isActive: $goToProfile,
                 label: {
                     EmptyView()
