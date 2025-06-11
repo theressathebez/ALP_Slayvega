@@ -1,12 +1,11 @@
-
 //  AuthViewModel.swift
 //  ALP_Slayvega
 //
 //  Created by student on 27/05/25.
 //
 
-import Foundation
 import FirebaseAuth
+import Foundation
 
 class AuthViewModel: ObservableObject {
     @Published var isSignedIn: Bool
@@ -25,7 +24,7 @@ class AuthViewModel: ObservableObject {
     func checkUserSession() {
         self.user = Auth.auth().currentUser
         self.isSignedIn = self.user != nil
-        
+
         // Update myUser email if user is signed in
         if let currentUser = self.user {
             if self.myUser.email.isEmpty {
@@ -47,13 +46,18 @@ class AuthViewModel: ObservableObject {
     }
 
     func signIn() async {
+        // Reset error state
+        await MainActor.run {
+            self.falseCredential = false
+        }
+
         do {
             let result = try await Auth.auth().signIn(
                 withEmail: myUser.email,
                 password: myUser.password
             )
-            
-            DispatchQueue.main.async {
+
+            await MainActor.run {
                 self.user = result.user
                 self.myUser.uid = result.user.uid
                 self.myUser.email = result.user.email ?? self.myUser.email
@@ -61,20 +65,28 @@ class AuthViewModel: ObservableObject {
                 self.falseCredential = false
             }
         } catch {
-            DispatchQueue.main.async {
+            print("Sign In Error: \(error.localizedDescription)")
+            await MainActor.run {
                 self.falseCredential = true
+                self.isSignedIn = false
+                self.user = nil
             }
         }
     }
 
     func signUp() async {
+        // Reset error state
+        await MainActor.run {
+            self.falseCredential = false
+        }
+
         do {
             let result = try await Auth.auth().createUser(
                 withEmail: myUser.email,
                 password: myUser.password
             )
 
-            DispatchQueue.main.async {
+            await MainActor.run {
                 self.user = result.user
                 self.myUser.uid = result.user.uid
                 self.myUser.email = result.user.email ?? self.myUser.email
@@ -82,13 +94,15 @@ class AuthViewModel: ObservableObject {
                 self.falseCredential = false
             }
         } catch {
-            DispatchQueue.main.async {
+            print("Sign Up Error: \(error.localizedDescription)")
+            await MainActor.run {
                 self.falseCredential = true
-                print("Sign Up Error: \(error.localizedDescription)")
+                self.isSignedIn = false
+                self.user = nil
             }
         }
     }
-    
+
     func fetchUserProfile() {
         guard let currentUser = Auth.auth().currentUser else { return }
 

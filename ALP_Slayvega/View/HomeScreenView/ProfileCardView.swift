@@ -11,7 +11,6 @@ struct ProfileCardView: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             HStack(spacing: 16) {
-                // ✅ Avatar (bisa diklik untuk ke Profile)
                 Button(action: {
                     goToProfile = true
                 }) {
@@ -19,7 +18,7 @@ struct ProfileCardView: View {
                         .fill(Color.fromHex("#FFA075").opacity(0.3))
                         .frame(width: 60, height: 60)
                         .overlay(
-                            Image("sampleProfile") // ganti sesuai image atau pakai Text initial
+                            Image("Image")  
                                 .resizable()
                                 .scaledToFit()
                                 .clipShape(Circle())
@@ -27,7 +26,6 @@ struct ProfileCardView: View {
                         )
                 }
 
-                // ✅ Text: Welcome, Leon Smith
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Welcome,")
                         .font(.system(size: 16))
@@ -59,7 +57,8 @@ struct ProfileCardView: View {
             }
 
             NavigationLink(
-                destination: ProfileView(showAuthSheet: $showAuthSheet, authVM: authVM),
+                destination: ProfileView(
+                    showAuthSheet: $showAuthSheet, authVM: authVM),
                 isActive: $goToProfile,
                 label: {
                     EmptyView()
@@ -67,16 +66,8 @@ struct ProfileCardView: View {
             )
             .hidden()
         }
-        .onAppear{
-            showAuthSheet = !authVM.isSignedIn
-        }
-        
-        .sheet(isPresented: $showAuthSheet) {
-            LoginRegisterSheet(showAuthSheet: $showAuthSheet)
-        }
         .accentColor(Color.fromHex("#FF8F6D"))
         .padding(.horizontal, 20)
         .padding(.top, 8)
     }
 }
-

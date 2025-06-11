@@ -1,4 +1,5 @@
 //
+//Users/monicathebez/Documents/GitHub/ALP_Slayvega/ALP_Slayvega/View
 //  MainView.swift
 //  ALP_Slayvega
 //
@@ -12,34 +13,34 @@ struct MainView: View {
     @State var showAuthSheet = false
 
     var body: some View {
-        TabView {
-            CommunityView()
-                .tabItem {
-                    Image(systemName: "person.3.fill")
-                    Text("Shares")
-                }
-            
-            StartPageView()
-                .tabItem {
-                    Label("Mindfulness", systemImage: "brain.head.profile")
-                }
-            HomeView()
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Dashboard")
-                }
+        if authViewModel.isSignedIn {
+            // Show main app content when user is signed in
+            TabView {
+                HomeView()
+                    .tabItem {
+                        Image(systemName: "house.fill")
+                        Text("Dashboard")
+                    }
 
-            JournalMainView()
-                .tabItem {
-                    Label("Journal", systemImage: "book.closed.fill")
-                }
-        }
-        .onAppear {
-            showAuthSheet = !authViewModel.isSignedIn
-        }
+                CommunityView()
+                    .tabItem {
+                        Image(systemName: "person.3.fill")
+                        Text("Shares")
+                    }
 
-        .sheet(isPresented: $showAuthSheet) {
-            LoginRegisterSheet(showAuthSheet: $showAuthSheet)
+                StartPageView()
+                    .tabItem {
+                        Label("Mindfulness", systemImage: "brain.head.profile")
+                    }
+
+                JournalMainView()
+                    .tabItem {
+                        Label("Journal", systemImage: "book.closed.fill")
+                    }
+            }
+        } else {
+            // Show login/register view when user is not signed in
+            LoginRegisterView()
         }
     }
 }

@@ -46,7 +46,6 @@ final class StressQuestionViewModelTesting: XCTestCase {
     func testCompletionPercentageCalculation() {
         let viewModel = StressQuestionViewModel()
 
-        // Manually set answer and advance index
         for _ in 0..<5 {
             if let question = viewModel.currentQuestion {
                 viewModel.answers[question.id] = 2

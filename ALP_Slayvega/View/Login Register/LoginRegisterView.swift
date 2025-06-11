@@ -1,7 +1,6 @@
 import SwiftUI
 
-struct LoginRegisterSheet: View {
-    @Binding var showAuthSheet: Bool
+struct LoginRegisterView: View {
     @EnvironmentObject var authVM: AuthViewModel
     @State var registerClicked: Bool = true
 
@@ -21,13 +20,9 @@ struct LoginRegisterSheet: View {
                     .padding()
 
                 if authVM.falseCredential {
-
                     Text("Invalid Username and Password")
-
                         .fontWeight(.medium)
-
                         .foregroundColor(Color.red)
-
                 }
 
                 Button(
@@ -35,9 +30,8 @@ struct LoginRegisterSheet: View {
                         Task {
                             await authVM.signIn()
                             authVM.checkUserSession()
-                            
+
                             if !authVM.falseCredential {
-                                showAuthSheet = false
                                 authVM.myUser = MyUser()
                             }
                         }
@@ -50,105 +44,86 @@ struct LoginRegisterSheet: View {
                 .padding()
                 .buttonStyle(.borderedProminent)
 
-
-             
-
                 Button(
-
                     action: {
-
                         registerClicked = false
-
                     }
-
                 ) {
-
-                    Text("Don't have an account? Register").font(.system(size: 15)).fontWeight(.medium)
-
+                    Text("Don't have an account?").font(.system(size: 15))
+                        .fontWeight(
+                            .medium
+                        )
+                        .foregroundStyle(.black)
+                    Text("Register").font(.system(size: 15))
+                        .fontWeight(
+                            .medium)
                 }
                 Spacer()
-
             }
-
-            .interactiveDismissDisabled(true)
-
+            .padding()
         } else {
-
             VStack {
                 Spacer()
-
                 Text("Register")
                     .font(.title).fontWeight(.bold)
 
                 TextField("Name", text: $authVM.myUser.name)
-
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-
                     .padding()
 
                 TextField("Email", text: $authVM.myUser.email)
-
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-
                     .padding()
 
                 SecureField("Password", text: $authVM.myUser.password)
-
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-
                     .padding()
 
                 if authVM.falseCredential {
-
                     Text("Invalid Username and Password")
-
                         .fontWeight(.medium)
-
                         .foregroundColor(Color.red)
-
                 }
 
                 Button(
-
                     action: {
-
                         Task {
-
                             await authVM.signUp()
-
-                            if authVM.falseCredential {
+                            if !authVM.falseCredential {
                                 authVM.checkUserSession()
-                                showAuthSheet = !authVM.isSignedIn
                                 authVM.myUser = MyUser()
                             }
                         }
                     }
                 ) {
-                    Text("Register").frame(maxWidth: .infinity)
+                    Text("Register")
+                        .frame(maxWidth: .infinity)
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
                 .buttonStyle(.borderedProminent)
-
 
                 Button(
                     action: {
                         registerClicked = true
                     }
                 ) {
-                    Text("Login").font(.system(size: 15)).fontWeight(.medium)
+                    Text("Already have an account?")
+                        .font(.system(size: 15))
+                        .fontWeight(.medium)
+                        .foregroundStyle(.black)
+                    Text("Login")
+                        .font(.system(size: 15))
+                        .fontWeight(.medium)
                 }
                 Spacer()
             }
-            .interactiveDismissDisabled(true)
+            .padding()
         }
     }
 }
 
 #Preview {
-    LoginRegisterSheet(
-        showAuthSheet:
-            .constant(true)
-    )
-    .environmentObject(AuthViewModel())
+    LoginRegisterView()
+        .environmentObject(AuthViewModel())
 }

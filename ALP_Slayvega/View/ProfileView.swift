@@ -34,43 +34,50 @@ struct ProfileView: View {
                             .fill(Color("#FFA075").opacity(0.3))
                             .frame(width: 100, height: 100)
                             .overlay(
-                                Text(String(authVM.myUser.getDisplayName().prefix(1)).uppercased())
-                                    .font(.system(size: 36, weight: .bold))
-                                    .foregroundColor(Color("#FFA075"))
+                                Image("Image")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .clipShape(Circle())
+                                    .padding(8)
                             )
-                        
+
                         Text(authVM.myUser.getDisplayName())
                             .font(.title2)
                             .fontWeight(.semibold)
-                        
-                        Text(authVM.myUser.email.isEmpty ? authVM.user?.email ?? "" : authVM.myUser.email)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+
+                        Text(
+                            authVM.myUser.email.isEmpty
+                                ? authVM.user?.email ?? "" : authVM.myUser.email
+                        )
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
                     }
                     .padding(.top, 20)
-                    
+
                     // Profile Information Section
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Profile Information")
                             .font(.headline)
                             .fontWeight(.semibold)
                             .padding(.horizontal)
-                        
+
                         VStack(spacing: 12) {
-                            // Name Field
                             ProfileInfoRow(
                                 title: "Display Name",
-                                value: authVM.myUser.name.isEmpty ? "Not set" : authVM.myUser.name,
+                                value: authVM.myUser.getDisplayName().isEmpty
+                                    ? "Not set"
+                                    : authVM.myUser.getDisplayName(),
                                 isEditing: isEditing,
                                 editValue: $tempName
                             )
-                            
+
                             Divider()
-                            
-                            // Email Field
+
                             ProfileInfoRow(
                                 title: "Email",
-                                value: authVM.myUser.email.isEmpty ? authVM.user?.email ?? "" : authVM.myUser.email,
+                                value: authVM.myUser.email.isEmpty
+                                    ? (authVM.user?.email ?? "Not set")
+                                    : authVM.myUser.email,
                                 isEditing: isEditing,
                                 editValue: $tempEmail
                             )
@@ -78,10 +85,12 @@ struct ProfileView: View {
                         .padding()
                         .background(Color.white)
                         .cornerRadius(16)
-                        .shadow(color: .gray.opacity(0.1), radius: 2, x: 0, y: 1)
+                        .shadow(
+                            color: .gray.opacity(0.1), radius: 2, x: 0, y: 1
+                        )
                         .padding(.horizontal)
                     }
-                    
+
                     VStack(spacing: 12) {
                         if isEditing {
                             HStack(spacing: 12) {
@@ -93,13 +102,13 @@ struct ProfileView: View {
                                 .background(Color.gray.opacity(0.2))
                                 .foregroundColor(.gray)
                                 .cornerRadius(20)
-                                
+
                                 Button("Save Changes") {
                                     saveChanges()
                                 }
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
-                                .background(Color("#FFA075"))
+                                .background(.orange)
                                 .foregroundColor(.white)
                                 .cornerRadius(20)
                                 .disabled(isLoading)
@@ -112,7 +121,7 @@ struct ProfileView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
-                            .background(Color("#FFA075"))
+                            .background(.orange)
                             .foregroundColor(.white)
                             .cornerRadius(20)
                             .padding(.horizontal)
@@ -126,7 +135,7 @@ struct ProfileView: View {
                         .foregroundColor(.white)
                         .cornerRadius(20)
                         .padding(.horizontal)
-                        
+
                         Button("Logout") {
                             authVM.signOut()
                             showAuthSheet = true
@@ -138,9 +147,9 @@ struct ProfileView: View {
                         .cornerRadius(20)
                         .padding(.horizontal)
                     }
-                    
+
                     Spacer()
-                }
+                }.padding(.bottom, 40)
             }
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
@@ -148,7 +157,9 @@ struct ProfileView: View {
                 initializeValues()
             }
             .alert(alertTitle, isPresented: $showingAlert) {
-                Button("OK") { }
+                Button("OK") {
+                    showingAlert = false
+                }
             } message: {
                 Text(alertMessage)
             }
@@ -163,41 +174,52 @@ struct ProfileView: View {
             }
         }
     }
-    
+
     private func initializeValues() {
         tempName = authVM.myUser.name
-        tempEmail = authVM.myUser.email.isEmpty ? authVM.user?.email ?? "" : authVM.myUser.email
+        tempEmail =
+            authVM.myUser.email.isEmpty
+            ? authVM.user?.email ?? "" : authVM.myUser.email
     }
-    
+
     private func startEditing() {
         isEditing = true
         tempName = authVM.myUser.name
-        tempEmail = authVM.myUser.email.isEmpty ? authVM.user?.email ?? "" : authVM.myUser.email
+        tempEmail =
+            authVM.myUser.email.isEmpty
+            ? authVM.user?.email ?? "" : authVM.myUser.email
     }
-    
+
     private func cancelEditing() {
         isEditing = false
         tempName = authVM.myUser.name
-        tempEmail = authVM.myUser.email.isEmpty ? authVM.user?.email ?? "" : authVM.myUser.email
+        tempEmail =
+            authVM.myUser.email.isEmpty
+            ? authVM.user?.email ?? "" : authVM.myUser.email
     }
-    
+
     private func saveChanges() {
         isLoading = true
-        
+
         // Save name changes
-        authVM.myUser.name = tempName.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+        authVM.myUser.name = tempName.trimmingCharacters(
+            in: .whitespacesAndNewlines)
+
         // If email changed, update it
-        if tempEmail != (authVM.myUser.email.isEmpty ? authVM.user?.email ?? "" : authVM.myUser.email) {
+        if tempEmail
+            != (authVM.myUser.email.isEmpty
+                ? authVM.user?.email ?? "" : authVM.myUser.email)
+        {
             updateEmail()
         } else {
             // If only name changed
             isEditing = false
             isLoading = false
-            showAlert(title: "Success", message: "Profile updated successfully!")
+            showAlert(
+                title: "Success", message: "Profile updated successfully!")
         }
     }
-    
+
     private func updateEmail() {
         Task {
             do {
@@ -206,17 +228,23 @@ struct ProfileView: View {
                     authVM.myUser.email = tempEmail
                     isEditing = false
                     isLoading = false
-                    showAlert(title: "Success", message: "Profile updated successfully!")
+                    showAlert(
+                        title: "Success",
+                        message: "Profile updated successfully!")
                 }
             } catch {
                 DispatchQueue.main.async {
                     isLoading = false
-                    showAlert(title: "Error", message: "Failed to update email: \(error.localizedDescription)")
+                    showAlert(
+                        title: "Error",
+                        message:
+                            "Failed to update email: \(error.localizedDescription)"
+                    )
                 }
             }
         }
     }
-    
+
     private func showAlert(title: String, message: String) {
         alertTitle = title
         alertMessage = message
@@ -229,23 +257,26 @@ struct ProfileInfoRow: View {
     let value: String
     let isEditing: Bool
     @Binding var editValue: String
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
                 .font(.caption)
                 .foregroundColor(.gray)
                 .textCase(.uppercase)
-            
-            if isEditing && title != "Email" { // Don't allow email editing in this row for simplicity
+
+            if isEditing && title != "Email" {
                 TextField(title, text: $editValue)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .multilineTextAlignment(.leading)
             } else {
                 Text(value)
                     .font(.body)
                     .foregroundColor(value == "Not set" ? .gray : .primary)
+                Spacer()
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -255,12 +286,12 @@ struct ChangePasswordView: View {
     @Binding var newPassword: String
     @Binding var confirmPassword: String
     @Binding var isPresented: Bool
-    
+
     @State private var showingAlert = false
     @State private var alertMessage = ""
     @State private var alertTitle = ""
     @State private var isLoading = false
-    
+
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -268,19 +299,19 @@ struct ChangePasswordView: View {
                     .font(.title2)
                     .fontWeight(.semibold)
                     .padding(.top, 20)
-                
+
                 VStack(spacing: 16) {
                     SecureField("Current Password", text: $currentPassword)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                    
+
                     SecureField("New Password", text: $newPassword)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                    
+
                     SecureField("Confirm New Password", text: $confirmPassword)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
                 .padding(.horizontal)
-                
+
                 Button("Update Password") {
                     updatePassword()
                 }
@@ -290,8 +321,10 @@ struct ChangePasswordView: View {
                 .foregroundColor(.white)
                 .cornerRadius(20)
                 .padding(.horizontal)
-                .disabled(isLoading || newPassword.isEmpty || confirmPassword.isEmpty || currentPassword.isEmpty)
-                
+                .disabled(
+                    isLoading || newPassword.isEmpty || confirmPassword.isEmpty
+                        || currentPassword.isEmpty)
+
                 Spacer()
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -313,52 +346,61 @@ struct ChangePasswordView: View {
             Text(alertMessage)
         }
     }
-    
+
     private func updatePassword() {
         guard newPassword == confirmPassword else {
             showAlert(title: "Error", message: "New passwords don't match")
             return
         }
-        
+
         guard newPassword.count >= 6 else {
-            showAlert(title: "Error", message: "Password must be at least 6 characters long")
+            showAlert(
+                title: "Error",
+                message: "Password must be at least 6 characters long")
             return
         }
-        
+
         isLoading = true
-        
+
         Task {
             do {
                 // Re-authenticate user with current password
-                let credential = EmailAuthProvider.credential(withEmail: authVM.user?.email ?? "", password: currentPassword)
+                let credential = EmailAuthProvider.credential(
+                    withEmail: authVM.user?.email ?? "",
+                    password: currentPassword)
                 try await authVM.user?.reauthenticate(with: credential)
-                
+
                 // Update password
                 try await authVM.user?.updatePassword(to: newPassword)
-                
+
                 DispatchQueue.main.async {
                     isLoading = false
-                    showAlert(title: "Success", message: "Password updated successfully!")
+                    showAlert(
+                        title: "Success",
+                        message: "Password updated successfully!")
                 }
             } catch {
                 DispatchQueue.main.async {
                     isLoading = false
-                    showAlert(title: "Error", message: "Failed to update password: \(error.localizedDescription)")
+                    showAlert(
+                        title: "Error",
+                        message:
+                            "Failed to update password: \(error.localizedDescription)"
+                    )
                 }
             }
         }
     }
-    
+
     private func clearFields() {
         currentPassword = ""
         newPassword = ""
         confirmPassword = ""
     }
-    
+
     private func showAlert(title: String, message: String) {
         alertTitle = title
         alertMessage = message
         showingAlert = true
     }
 }
-
