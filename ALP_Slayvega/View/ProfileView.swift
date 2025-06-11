@@ -156,13 +156,6 @@ struct ProfileView: View {
             .onAppear {
                 initializeValues()
             }
-            .alert(alertTitle, isPresented: $showingAlert) {
-                Button("OK") {
-                    showingAlert = false
-                }
-            } message: {
-                Text(alertMessage)
-            }
             .sheet(isPresented: $showingPasswordChange) {
                 ChangePasswordView(
                     authVM: authVM,
@@ -171,6 +164,15 @@ struct ProfileView: View {
                     confirmPassword: $confirmPassword,
                     isPresented: $showingPasswordChange
                 )
+            }
+            .alert(alertTitle, isPresented: $showingAlert) {
+                Button("OK") {
+                    print("OK tapped")
+
+                    showingAlert = false
+                }
+            } message: {
+                Text(alertMessage)
             }
         }
     }
@@ -201,18 +203,26 @@ struct ProfileView: View {
     private func saveChanges() {
         isLoading = true
 
-        // Save name changes
-        authVM.myUser.name = tempName.trimmingCharacters(
+        let trimmedName = tempName.trimmingCharacters(
             in: .whitespacesAndNewlines)
 
-        // If email changed, update it
-        if tempEmail
-            != (authVM.myUser.email.isEmpty
-                ? authVM.user?.email ?? "" : authVM.myUser.email)
-        {
+        guard !trimmedName.isEmpty else {
+            isLoading = false
+            showAlert(title: "Error", message: "Name cannot be empty.")
+            return
+        }
+
+        authVM.myUser.name = trimmedName
+
+        let currentEmail =
+            authVM.myUser.email.isEmpty
+            ? authVM.user?.email ?? ""
+            : authVM.myUser.email
+
+        // Email changed
+        if tempEmail != currentEmail {
             updateEmail()
         } else {
-            // If only name changed
             isEditing = false
             isLoading = false
             showAlert(
@@ -221,6 +231,12 @@ struct ProfileView: View {
     }
 
     private func updateEmail() {
+        guard !tempEmail.trimmingCharacters(in: .whitespaces).isEmpty else {
+            isLoading = false
+            showAlert(title: "Error", message: "Email cannot be empty.")
+            return
+        }
+
         Task {
             do {
                 try await authVM.user?.updateEmail(to: tempEmail)
@@ -246,6 +262,7 @@ struct ProfileView: View {
     }
 
     private func showAlert(title: String, message: String) {
+        guard showingAlert == false else { return }
         alertTitle = title
         alertMessage = message
         showingAlert = true
